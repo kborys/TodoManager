@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "w42qtw70yIe6imerkWSq7mufohZtSs2p6STL+U00Cig=",
+  "Source": "TodoManager.Api",
+  "BasePath": "_content/TodoManager.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
