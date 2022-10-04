@@ -1,6 +1,6 @@
-﻿namespace TodoManager.Core.Models;
+﻿namespace TodoManager.Common.Entities;
 
-public class TodoModel
+public class Todo
 {
     public int TodoId { get; set; }
     public string Title { get; set; }

@@ -1,4 +1,6 @@
-﻿namespace TodoManager.Core.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace TodoManager.Common.Entities;
 
 public class User
 {
@@ -6,6 +8,7 @@ public class User
     public string UserName { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string Password { get; set; }
 
+    [JsonIgnore]
+    public string Password { get; set; }
 }
