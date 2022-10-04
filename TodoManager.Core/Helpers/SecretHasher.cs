@@ -1,8 +1,7 @@
 ﻿using System.Security.Cryptography;
 
-namespace TodoManager.Core.Helpers;
+namespace TodoManager.Common.Helpers;
 
-// source: https://stackoverflow.com/a/73125177/11249699
 public static class SecretHasher
 {
     private const int _saltSize = 16; // 128 bits
@@ -37,7 +36,7 @@ public static class SecretHasher
 
     public static bool Verify(string secret, string hash)
     {
-        var segments = hash.Split(segmentDelimiter);
+        var segments = hash.Trim().Split(segmentDelimiter);
         var key = Convert.FromBase64String(segments[0]);
         var salt = Convert.FromBase64String(segments[1]);
         var iterations = int.Parse(segments[2]);
