@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TodoManager.Common.Entities;
 using TodoManager.Common.Contracts;
 using TodoManager.Common.Models.Users;
+using System.Security.Claims;
 
 namespace TodoManager.Api.Controllers;
 
@@ -47,6 +48,10 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public ActionResult Update(int id, UpdateRequest model)
     {
+        var activeUserId = GetActiveUserId();
+        if(activeUserId != id)
+            return Unauthorized();
+
         _users.Update(id, model);
 
         return Ok(new { message = "User updated successfully"});
@@ -55,8 +60,19 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public ActionResult Delete(int id)
     {
+        var activeUserId = GetActiveUserId();
+        if(activeUserId != id)
+            return Unauthorized();
+
         _users.Delete(id);
 
         return Ok(new { message = "User deleted successfully"});
+    }
+
+    private int GetActiveUserId()
+    {
+        var userIdText = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+        return int.Parse(userIdText!);
     }
 }
