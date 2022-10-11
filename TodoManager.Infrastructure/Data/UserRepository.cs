@@ -21,7 +21,8 @@ public class UserRepository : IUserRepository
     }
     public async Task Create(CreateRequest model)
     {
-        const string sql = $"INSERT INTO {_table} (UserName, FirstName, LastName, Password) " +
+        const string sql = $"INSERT INTO {_table} " +
+            $"(UserName, FirstName, LastName, Password) " +
             $"VALUES (@UserName, @FirstName, @LastName, @Password);";
 
         IDbConnection connection = new SqlConnection(_connString);
@@ -49,7 +50,9 @@ public class UserRepository : IUserRepository
 
     public async Task Update(User user)
     {
-        const string sql = $"UPDATE {_table} SET FirstName = @FirstName, LastName = @LastName, Password = @Password;";
+        const string sql = $"UPDATE {_table} " +
+            $"SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
+            $"WHERE UserID = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 

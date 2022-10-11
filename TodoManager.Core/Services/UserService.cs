@@ -1,25 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using TodoManager.Common.Entities;
-using TodoManager.Common.Helpers;
+﻿using TodoManager.Common.Entities;
 using TodoManager.Common.Contracts;
 using TodoManager.Common.Models.Users;
+using TodoManager.Common.Helpers;
 
 namespace TodoManager.Core.Services;
 
 public class UserService : IUserService
 {
 	private readonly IUserRepository _userRepository;
-	private readonly IConfiguration _config;
+    private readonly IJwtUtils _jwtUtils;
 
-	public UserService(IUserRepository userRepository, IConfiguration config)
+    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils)
 	{
 		_userRepository = userRepository;
-		_config = config;
-	}
+        _jwtUtils = jwtUtils;
+    }
 
 	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
 	{
@@ -31,36 +26,12 @@ public class UserService : IUserService
 		if (!passwordMatches)
             return null;
 
-        var token = GenerateToken(user);
+        var token = _jwtUtils.GenerateToken(user);
 
         AuthenticateResponse response = new(user, token);
 
         return response;
 	}
-
-    private string GenerateToken(User user)
-    {
-        var secretKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-            _config["Authentication:SecretKey"]));
-
-        var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-
-        List<Claim> claims = new()
-        {
-            new(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-            new(JwtRegisteredClaimNames.UniqueName, user.UserName)
-        };
-
-        var token = new JwtSecurityToken(
-                _config["Authentication:Issuer"],
-                _config["Authentication:Audience"],
-                claims,
-                DateTime.UtcNow,
-                DateTime.UtcNow.AddHours(1),
-                signingCredentials);
-
-        return new JwtSecurityTokenHandler().WriteToken(token);
-    }
 
 	public async Task Create(CreateRequest model)
 	{
