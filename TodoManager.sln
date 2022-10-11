@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Core", "TodoManager.Core\TodoManager.Core.csproj", "{26F531C4-4A27-4050-B5B6-D1E2AF176356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoManager.Common", "TodoManager.Common\TodoManager.Common.csproj", "{4106CF33-B380-4044-A5B9-04AD828A6349}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Common", "TodoManager.Common\TodoManager.Common.csproj", "{4106CF33-B380-4044-A5B9-04AD828A6349}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "TodoManager.SqlDb", "TodoManager.SqlDb\TodoManager.SqlDb.sqlproj", "{698A50FC-7566-44F3-B835-20DEC3E6865F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,12 @@ Global
 		{4106CF33-B380-4044-A5B9-04AD828A6349}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4106CF33-B380-4044-A5B9-04AD828A6349}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4106CF33-B380-4044-A5B9-04AD828A6349}.Release|Any CPU.Build.0 = Release|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{698A50FC-7566-44F3-B835-20DEC3E6865F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
