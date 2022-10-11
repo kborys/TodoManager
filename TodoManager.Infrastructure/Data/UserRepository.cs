@@ -19,49 +19,49 @@ public class UserRepository : IUserRepository
         _config = config;
         _connString = _config.GetConnectionString("Default");
     }
-    public void Create(CreateRequest model)
+    public async Task Create(CreateRequest model)
     {
         const string sql = $"INSERT INTO {_table} (UserName, FirstName, LastName, Password) " +
             $"VALUES (@UserName, @FirstName, @LastName, @Password);";
 
         IDbConnection connection = new SqlConnection(_connString);
 
-        connection.Execute(sql, model);
+        await connection.ExecuteAsync(sql, model);
     }
 
-    public User? GetById(int id)
+    public async Task<User?> GetById(int id)
     {
         const string sql = $"SELECT * FROM {_table} WHERE UserID = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
-        return connection.QueryFirstOrDefault<User>(sql, new { UserId = id });
+        return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = id });
     }
 
-    public User? GetByUserName(string userName)
+    public async Task<User?> GetByUserName(string userName)
     {
         const string sql = $"SELECT * FROM {_table} WHERE UserName = @UserName;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
-        return connection.QueryFirstOrDefault<User>(sql, new { UserName = userName });
+        return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
     }
 
-    public void Update(User user)
+    public async Task Update(User user)
     {
         const string sql = $"UPDATE {_table} SET FirstName = @FirstName, LastName = @LastName, Password = @Password;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
-        connection.Execute(sql, user);
+        await connection.ExecuteAsync(sql, user);
     }
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
         const string sql = $"DELETE FROM {_table} WHERE UserID = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
-        connection.Execute(sql, new { UserId = id});
+        await connection.ExecuteAsync(sql, new { UserId = id});
     }
 }

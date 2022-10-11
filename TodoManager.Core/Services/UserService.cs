@@ -21,9 +21,9 @@ public class UserService : IUserService
 		_config = config;
 	}
 
-	public AuthenticateResponse? Authenticate(AuthenticateRequest model)
+	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
 	{
-		var user = _userRepository.GetByUserName(model.UserName);
+		var user = await _userRepository.GetByUserName(model.UserName);
         if(user is null)
             return null;
 
@@ -62,9 +62,9 @@ public class UserService : IUserService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-	public void Create(CreateRequest model)
+	public async Task Create(CreateRequest model)
 	{
-        var user = _userRepository.GetByUserName(model.UserName);
+        var user = await _userRepository.GetByUserName(model.UserName);
         // TODO: create a way to return a message that username is already taken
         if (user is not null)
             return;
@@ -73,17 +73,17 @@ public class UserService : IUserService
         model.UserName = model.UserName.Trim();
         model.Password = SecretHasher.Hash(model.Password);
 
-		_userRepository.Create(model);
+		await _userRepository.Create(model);
 	}
 
-    public User? GetById(int id)
+    public async Task<User?> GetById(int id)
     {
-        return _userRepository.GetById(id);
+        return await _userRepository.GetById(id);
     }
 
-    public void Update(int id, UpdateRequest model)
+    public async Task Update(int id, UpdateRequest model)
 	{
-        var user = _userRepository.GetById(id);
+        var user = await _userRepository.GetById(id);
 
         // TODO: create a way to inform that user with given id doesn't exist
         if(user is null)
@@ -96,11 +96,11 @@ public class UserService : IUserService
         if(!string.IsNullOrEmpty(model.Password))
             user.Password = SecretHasher.Hash(model.Password);
 
-		_userRepository.Update(user);
+		await _userRepository.Update(user);
 	}
 
-    public void Delete(int id)
+    public async Task Delete(int id)
     {
-        _userRepository.Delete(id);
+        await _userRepository.Delete(id);
     }
 }
