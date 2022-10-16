@@ -1,4 +1,5 @@
 using TodoManager.Api;
+using TodoManager.Api.Helpers;
 using TodoManager.Core;
 using TodoManager.Infrastructure;
 
@@ -22,6 +23,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
 

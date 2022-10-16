@@ -32,7 +32,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetById(int id)
     {
-        const string sql = $"SELECT * FROM {_table} WHERE UserID = @UserId;";
+        const string sql = $"SELECT * FROM {_table} WHERE UserId = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
@@ -52,7 +52,7 @@ public class UserRepository : IUserRepository
     {
         const string sql = $"UPDATE {_table} " +
             $"SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
-            $"WHERE UserID = @UserId;";
+            $"WHERE UserId = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
@@ -61,7 +61,7 @@ public class UserRepository : IUserRepository
 
     public async Task Delete(int id)
     {
-        const string sql = $"DELETE FROM {_table} WHERE UserID = @UserId;";
+        const string sql = $"DELETE FROM {_table} WHERE UserId = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 

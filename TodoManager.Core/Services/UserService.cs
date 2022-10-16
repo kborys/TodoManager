@@ -2,6 +2,7 @@
 using TodoManager.Common.Contracts;
 using TodoManager.Common.Models.Users;
 using TodoManager.Common.Helpers;
+using TodoManager.Common.Exceptions;
 
 namespace TodoManager.Core.Services;
 
@@ -36,11 +37,9 @@ public class UserService : IUserService
 	public async Task Create(CreateRequest model)
 	{
         var user = await _userRepository.GetByUserName(model.UserName);
-        // TODO: create a way to return a message that username is already taken
         if (user is not null)
-            return;
+            throw new UserNameTakenException(model.UserName);
         
-        // TODO: add a contraint to the db that disallows storing leading and trailing spaces
         model.UserName = model.UserName.Trim();
         model.Password = SecretHasher.Hash(model.Password);
 
@@ -55,10 +54,8 @@ public class UserService : IUserService
     public async Task Update(int id, UpdateRequest model)
 	{
         var user = await _userRepository.GetById(id);
-
-        // TODO: create a way to inform that user with given id doesn't exist
         if(user is null)
-            return;
+            throw new UserNotFoundException(id);
 
         if(!string.IsNullOrEmpty(model.FirstName))
             user.FirstName = model.FirstName;
