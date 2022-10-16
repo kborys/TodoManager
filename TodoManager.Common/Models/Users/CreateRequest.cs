@@ -20,4 +20,16 @@ public class CreateRequest
     [Required]
     [MinLength(8)]
     public string Password { get; set; }
+    [Required]
+    [EmailAddress]
+    public string EmailAddress { get; set; }
+
+    public CreateRequest(string userName, string firstName, string lastName, string password, string emailAddress)
+    {
+        UserName = userName;
+        FirstName = firstName;
+        LastName = lastName;
+        Password = password;
+        EmailAddress = emailAddress;
+    }
 }

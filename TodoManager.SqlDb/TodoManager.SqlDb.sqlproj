@@ -58,11 +58,25 @@
     <Folder Include="Properties" />
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
+    <Folder Include="Scripts" />
+    <Folder Include="Scripts\PostDeploymentScripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\User.sql" />
     <Build Include="dbo\Tables\Todo.sql" />
-    <Build Include="dbo\Tables\TodosGroup.sql" />
-    <Build Include="dbo\Tables\UserTodosGroup.sql" />
+    <Build Include="dbo\Tables\Group.sql" />
+    <Build Include="dbo\Tables\UserGroupRelation.sql" />
+    <Build Include="dbo\Tables\Status.sql" />
+    <None Include="Scripts\PostDeploymentScripts\Script.PostDeployStatus.sql" />
+    <None Include="Scripts\PostDeploymentScripts\Script.PostDeployTodo.sql" />
+    <None Include="Scripts\PostDeploymentScripts\Script.PostDeployUser.sql" />
+    <None Include="Scripts\PostDeploymentScripts\Script.PostDeployUserGroupRelation.sql" />
+    <None Include="Scripts\PostDeploymentScripts\Script.PostDeployGroup.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TodoManager.SqlDb.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Scripts\PostDeploymentScripts\Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>

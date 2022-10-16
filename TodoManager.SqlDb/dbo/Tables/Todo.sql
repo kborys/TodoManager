@@ -1,10 +1,12 @@
 ﻿CREATE TABLE [dbo].[Todo]
 (
-	[TodoID] INT NOT NULL PRIMARY KEY, 
+	[TodoId] INT NOT NULL PRIMARY KEY IDENTITY, 
     [Title] NVARCHAR(50) NOT NULL, 
     [Description] NVARCHAR(250) NULL, 
-    [TodosGroupID] INT NOT NULL,
-    [OwnerID] INT NOT NULL, 
-    CONSTRAINT FK_Todo_TodosGroup FOREIGN KEY ([TodosGroupID]) REFERENCES TodosGroup([TodosGroupID]),
-    CONSTRAINT FK_Todo_User FOREIGN KEY ([OwnerID]) REFERENCES [User]([UserID])
+    [GroupId] INT NOT NULL,
+    [OwnerId] INT NOT NULL, 
+    [StatusId] INT NOT NULL DEFAULT 1, 
+    CONSTRAINT FK_Todo_Group FOREIGN KEY ([GroupId]) REFERENCES [Group]([GroupId]),
+    CONSTRAINT FK_Todo_User FOREIGN KEY ([OwnerId]) REFERENCES [User]([UserId]),
+    CONSTRAINT FK_Todo_Status FOREIGN KEY ([StatusId]) REFERENCES [Status]([StatusId])
 )

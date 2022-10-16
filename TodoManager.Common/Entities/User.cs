@@ -11,4 +11,6 @@ public class User
 
     [JsonIgnore]
     public string Password { get; set; }
+    public string EmailAddress { get; set; }
+    public List<Group> Groups { get; set; }
 }
