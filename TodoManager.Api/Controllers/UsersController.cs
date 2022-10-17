@@ -20,9 +20,9 @@ public class UsersController : ControllerBase
 
     [HttpPost("authenticate")]
     [AllowAnonymous]
-    public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
+    public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest request)
     {
-        var response = await _users.Authenticate(model);
+        var response = await _users.Authenticate(request);
 
         if (response is null)
             return Unauthorized();
@@ -32,47 +32,52 @@ public class UsersController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register(CreateRequest model)
+    public async Task<IActionResult> Register(CreateRequest request)
     {
-        await _users.Create(model);
+        var newUser = await _users.Create(request);
 
-        return Ok();
+        return CreatedAtRoute("GetUserById", new { id = newUser.UserId }, newUser);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}", Name = "GetUserById")]
     public async Task<ActionResult<User?>> GetById(int id)
     {
-        return await _users.GetById(id);
+        var user = await _users.GetById(id);
+
+        return Ok(user);
     }
 
-    [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, UpdateRequest model)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Update(int id, UpdateRequest request)
     {
-        var activeUserId = GetActiveUserId();
-        if(activeUserId != id)
-            return Unauthorized();
+        if(!UserIsActiveUser(id))
+            return Forbid();
 
-        await _users.Update(id, model);
+        await _users.Update(id, request);
 
         return Ok(new { message = "User updated successfully"});
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        var activeUserId = GetActiveUserId();
-        if(activeUserId != id)
-            return Unauthorized();
+        if(!UserIsActiveUser(id))
+            return Forbid();
 
         await _users.Delete(id);
 
         return Ok(new { message = "User deleted successfully"});
     }
 
+    private bool UserIsActiveUser(int userId)
+    {
+        return GetActiveUserId() == userId;
+    }
+
     private int GetActiveUserId()
     {
         var userIdText = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
+    
         return int.Parse(userIdText!);
     }
 }

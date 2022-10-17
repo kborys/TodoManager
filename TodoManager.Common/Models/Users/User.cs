@@ -12,4 +12,19 @@ public class User
     [JsonIgnore]
     public string Password { get; set; }
     public string EmailAddress { get; set; }
+
+    private User() //dapper purpose
+    {
+
+    }
+
+    public User(string userName, string firstName, string lastName, string password, string emailAddress, int userId = 0)
+    {
+        UserId = userId;
+        UserName = userName;
+        FirstName = firstName;
+        LastName = lastName;
+        Password = password;
+        EmailAddress = emailAddress;
+    }
 }

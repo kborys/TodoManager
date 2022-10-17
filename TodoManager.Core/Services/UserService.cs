@@ -17,13 +17,13 @@ public class UserService : IUserService
         _jwtUtils = jwtUtils;
     }
 
-	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
+	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request)
 	{
-		var user = await _userRepository.GetByUserName(model.UserName);
+		var user = await _userRepository.GetByUserName(request.UserName);
         if(user is null)
             return null;
 
-		bool passwordMatches = SecretHasher.Verify(model.Password, user.Password);
+		bool passwordMatches = SecretHasher.Verify(request.Password, user.Password);
 		if (!passwordMatches)
             return null;
 
@@ -34,35 +34,43 @@ public class UserService : IUserService
         return response;
 	}
 
-	public async Task Create(CreateRequest model)
+	public async Task<User> Create(CreateRequest request)
 	{
-        var user = await _userRepository.GetByUserName(model.UserName);
-        if (user is not null)
-            throw new DuplicateException($"Username '{model.UserName}' is already taken. Please try again.");
+        var existingUser = await _userRepository.Count(request.UserName, request.EmailAddress);
+        if (existingUser > 0)
+            throw new DuplicateException($"Username or EmailAddress is already taken. Please try again.");
         
-        model.UserName = model.UserName.Trim();
-        model.Password = SecretHasher.Hash(model.Password);
+        request.UserName = request.UserName.Trim();
+        request.Password = SecretHasher.Hash(request.Password);
 
-		await _userRepository.Create(model);
+        var newUser = new User(request.UserName, request.FirstName, request.LastName, request.Password, request.EmailAddress); 
+        newUser.UserId = await _userRepository.Create(request);
+
+        if(newUser.UserId == 0)
+            throw new Exception("Something went wrong. Contact support");
+
+        return newUser;
 	}
 
     public async Task<User?> GetById(int id)
     {
-        return await _userRepository.GetById(id);
+        var user = await _userRepository.GetById(id);
+
+        return user;
     }
 
-    public async Task Update(int id, UpdateRequest model)
+    public async Task Update(int id, UpdateRequest request)
 	{
         var user = await _userRepository.GetById(id);
         if(user is null)
             throw new NotFoundException($"User with given id '{id}' doesn't exist in the database. Please try again.");
 
-        if(!string.IsNullOrEmpty(model.FirstName))
-            user.FirstName = model.FirstName;
-        if(!string.IsNullOrEmpty(model.LastName))
-            user.LastName = model.LastName;
-        if(!string.IsNullOrEmpty(model.Password))
-            user.Password = SecretHasher.Hash(model.Password);
+        if(!string.IsNullOrEmpty(request.FirstName))
+            user.FirstName = request.FirstName;
+        if(!string.IsNullOrEmpty(request.LastName))
+            user.LastName = request.LastName;
+        if(!string.IsNullOrEmpty(request.Password))
+            user.Password = SecretHasher.Hash(request.Password);
 
 		await _userRepository.Update(user);
 	}

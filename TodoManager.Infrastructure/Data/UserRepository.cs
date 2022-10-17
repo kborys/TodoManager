@@ -19,22 +19,27 @@ public class UserRepository : IUserRepository
         _config = config;
         _connString = _config.GetConnectionString("Default");
     }
-    public async Task Create(CreateRequest model)
+
+    private IDbConnection Connection => new SqlConnection(_connString);
+
+    public async Task<int> Create(CreateRequest request)
     {
-        const string sql = $"INSERT INTO {_table} " +
-            $"(UserName, FirstName, LastName, Password) " +
-            $"VALUES (@UserName, @FirstName, @LastName, @Password);";
+        const string sql = $"DECLARE @InsertedRows AS TABLE (Id int);" +
+            $"INSERT INTO {_table} (UserName, FirstName, LastName, Password, EmailAddress) " +
+            $"OUTPUT INSERTED.UserId INTO @InsertedRows " +
+            $"VALUES (@UserName, @FirstName, @LastName, @Password, @EmailAddress); " +
+            $"SELECT Id FROM @InsertedRows";
 
-        IDbConnection connection = new SqlConnection(_connString);
+        using var connection = Connection;
 
-        await connection.ExecuteAsync(sql, model);
+        return await connection.ExecuteScalarAsync<int>(sql, request);
     }
 
     public async Task<User?> GetById(int id)
     {
         const string sql = $"SELECT * FROM {_table} WHERE UserId = @UserId;";
 
-        IDbConnection connection = new SqlConnection(_connString);
+        using var connection = Connection;
 
         return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserId = id });
     }
@@ -43,7 +48,7 @@ public class UserRepository : IUserRepository
     {
         const string sql = $"SELECT * FROM {_table} WHERE UserName = @UserName;";
 
-        IDbConnection connection = new SqlConnection(_connString);
+        using var connection = Connection;
 
         return await connection.QueryFirstOrDefaultAsync<User>(sql, new { UserName = userName });
     }
@@ -54,7 +59,7 @@ public class UserRepository : IUserRepository
             $"SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
             $"WHERE UserId = @UserId;";
 
-        IDbConnection connection = new SqlConnection(_connString);
+        using var connection = Connection;
 
         await connection.ExecuteAsync(sql, user);
     }
@@ -66,5 +71,16 @@ public class UserRepository : IUserRepository
         IDbConnection connection = new SqlConnection(_connString);
 
         await connection.ExecuteAsync(sql, new { UserId = id});
+    }
+
+    public async Task<int> Count(string userName, string emailAddress)
+    {
+        const string sql = $"SELECT COUNT(*) " +
+            $"FROM {_table} " +
+            $"WHERE UserName = @UserName OR EmailAddress = @EmailAddress";
+
+        using var connection = Connection;
+
+        return await connection.ExecuteScalarAsync<int>(sql, new { UserName = userName, EmailAddress = emailAddress });
     }
 }
