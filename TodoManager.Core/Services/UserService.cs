@@ -38,7 +38,7 @@ public class UserService : IUserService
 	{
         var user = await _userRepository.GetByUserName(model.UserName);
         if (user is not null)
-            throw new UserNameTakenException(model.UserName);
+            throw new DuplicateException($"Username '{model.UserName}' is already taken. Please try again.");
         
         model.UserName = model.UserName.Trim();
         model.Password = SecretHasher.Hash(model.Password);
@@ -55,7 +55,7 @@ public class UserService : IUserService
 	{
         var user = await _userRepository.GetById(id);
         if(user is null)
-            throw new UserNotFoundException(id);
+            throw new NotFoundException($"User with given id '{id}' doesn't exist in the database. Please try again.");
 
         if(!string.IsNullOrEmpty(model.FirstName))
             user.FirstName = model.FirstName;
