@@ -1,4 +1,4 @@
-﻿using TodoManager.Common.Entities;
+﻿using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Common.Contracts;
 

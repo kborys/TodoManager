@@ -2,8 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using TodoManager.Common.Entities;
-using TodoManager.Common.Contracts;
+using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Infrastructure.Data;

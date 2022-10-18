@@ -2,12 +2,12 @@
 
 namespace TodoManager.Common.Attributes;
 
-public class EmptyOrInRangeAttribute : ValidationAttribute
+public class EmptyOrStringLengthAttribute : ValidationAttribute
 {
     public int Minimum { get; set; } = 0;
     public int Maximum { get; set; } = int.MaxValue;
 
-    public EmptyOrInRangeAttribute()
+    public EmptyOrStringLengthAttribute()
     {
     }
 

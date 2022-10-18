@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TodoManager.Common.Entities;
+namespace TodoManager.Common.Models.Users;
 
 public class User
 {

@@ -1,7 +1,6 @@
-﻿using TodoManager.Common.Entities;
-using TodoManager.Common.Models.Users;
+﻿using TodoManager.Common.Models.Users;
 
-namespace TodoManager.Common.Contracts;
+namespace TodoManager.Common.Contracts.Services;
 
 public interface IUserService
 {

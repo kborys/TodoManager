@@ -1,6 +1,4 @@
-﻿using TodoManager.Common.Entities;
-
-namespace TodoManager.Common.Models.Users;
+﻿namespace TodoManager.Common.Models.Users;
 
 public class AuthenticateResponse
 {

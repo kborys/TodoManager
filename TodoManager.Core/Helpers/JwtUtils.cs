@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TodoManager.Common.Contracts;
-using TodoManager.Common.Entities;
+using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Core.Helpers;
 

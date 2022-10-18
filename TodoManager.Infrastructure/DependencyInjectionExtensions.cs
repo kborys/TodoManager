@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TodoManager.Common.Contracts;
+using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Infrastructure.Data;
 
 namespace TodoManager.Infrastructure;

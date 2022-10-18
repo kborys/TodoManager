@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TodoManager.Common.Entities;
-using TodoManager.Common.Contracts;
 using TodoManager.Common.Models.Users;
 using System.Security.Claims;
+using TodoManager.Common.Contracts.Services;
 
 namespace TodoManager.Api.Controllers;
 

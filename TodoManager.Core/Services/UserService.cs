@@ -1,8 +1,9 @@
-﻿using TodoManager.Common.Entities;
-using TodoManager.Common.Contracts;
+﻿using TodoManager.Common.Contracts;
 using TodoManager.Common.Models.Users;
 using TodoManager.Common.Helpers;
 using TodoManager.Common.Exceptions;
+using TodoManager.Common.Contracts.Services;
+using TodoManager.Common.Contracts.Repositories;
 
 namespace TodoManager.Core.Services;
 
