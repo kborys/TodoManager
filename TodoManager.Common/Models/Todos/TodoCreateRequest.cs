@@ -4,7 +4,7 @@ using TodoManager.Common.Models.Enums;
 
 namespace TodoManager.Common.Models.Todos;
 
-public class CreateRequest
+public class TodoCreateRequest
 {
     [Required]
     [MinLength(2)]

@@ -5,8 +5,9 @@ namespace TodoManager.Common.Contracts.Services;
 public interface IUserService
 {
     Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request);
-    Task<User> Create(CreateRequest request);
+    Task<User> Create(UserCreateRequest request);
     Task<User?> GetById(int id);
-    Task Update(int id, UpdateRequest request);
+    int GetActiveUserId();
+    Task Update(int id, UserUpdateRequest request);
     Task Delete(int id);
 }

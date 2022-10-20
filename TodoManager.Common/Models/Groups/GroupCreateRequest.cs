@@ -2,7 +2,7 @@
 
 namespace TodoManager.Common.Models.Groups;
 
-public class CreateRequest
+public class GroupCreateRequest
 {
     [Required]
     [MinLength(2)]
@@ -13,7 +13,7 @@ public class CreateRequest
     [Range(minimum: 1, maximum: int.MaxValue)]
     public int OwnerId { get; set; }
 
-    public CreateRequest(string name, int ownerId)
+    public GroupCreateRequest(string name, int ownerId)
     {
         Name = name;
         OwnerId = ownerId;

@@ -10,18 +10,18 @@ namespace TodoManager.Api.Controllers;
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService _users;
+    private readonly IUserService _userService;
 
-    public UsersController(IUserService usersService)
+    public UsersController(IUserService userService)
     {
-        _users = usersService;
+        _userService = userService;
     }
 
     [HttpPost("authenticate")]
     [AllowAnonymous]
     public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest request)
     {
-        var response = await _users.Authenticate(request);
+        var response = await _userService.Authenticate(request);
 
         if (response is null)
             return Unauthorized();
@@ -31,9 +31,9 @@ public class UsersController : ControllerBase
 
     [HttpPost("register")]
     [AllowAnonymous]
-    public async Task<IActionResult> Register(CreateRequest request)
+    public async Task<IActionResult> Register(UserCreateRequest request)
     {
-        var newUser = await _users.Create(request);
+        var newUser = await _userService.Create(request);
 
         return CreatedAtRoute("GetUserById", new { id = newUser.UserId }, newUser);
     }
@@ -41,20 +41,20 @@ public class UsersController : ControllerBase
     [HttpGet("{id:int}", Name = "GetUserById")]
     public async Task<ActionResult<User?>> GetById(int id)
     {
-        var user = await _users.GetById(id);
+        var user = await _userService.GetById(id);
 
         return Ok(user);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<ActionResult> Update(int id, UpdateRequest request)
+    public async Task<ActionResult> Update(int id, UserUpdateRequest request)
     {
         if(!UserIsActiveUser(id))
             return Forbid();
 
-        await _users.Update(id, request);
+        await _userService.Update(id, request);
 
-        return Ok(new { message = "User updated successfully"});
+        return NoContent();
     }
 
     [HttpDelete("{id:int}")]
@@ -63,20 +63,14 @@ public class UsersController : ControllerBase
         if(!UserIsActiveUser(id))
             return Forbid();
 
-        await _users.Delete(id);
+        await _userService.Delete(id);
 
-        return Ok(new { message = "User deleted successfully"});
+        return NoContent();
     }
 
     private bool UserIsActiveUser(int userId)
     {
-        return GetActiveUserId() == userId;
-    }
-
-    private int GetActiveUserId()
-    {
-        var userIdText = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-    
-        return int.Parse(userIdText!);
+        int activeUserId = _userService.GetActiveUserId();
+        return activeUserId == userId;
     }
 }

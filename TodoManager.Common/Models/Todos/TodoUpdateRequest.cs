@@ -3,7 +3,7 @@ using TodoManager.Common.Models.Enums;
 
 namespace TodoManager.Common.Models.Todos;
 
-public class UpdateRequest
+public class TodoUpdateRequest
 {
     [EmptyOrStringLength(Minimum = 2, Maximum = 50, ErrorMessage = "Must be either empty or contain between 2 and 50 characters")]
     public string Title { get; set; } = string.Empty;

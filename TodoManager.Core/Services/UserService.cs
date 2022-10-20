@@ -4,6 +4,8 @@ using TodoManager.Common.Helpers;
 using TodoManager.Common.Exceptions;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Contracts.Repositories;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace TodoManager.Core.Services;
 
@@ -11,11 +13,13 @@ public class UserService : IUserService
 {
 	private readonly IUserRepository _userRepository;
     private readonly IJwtUtils _jwtUtils;
+    private readonly IHttpContextAccessor _accessor;
 
-    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils)
+    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils, IHttpContextAccessor accessor)
 	{
 		_userRepository = userRepository;
         _jwtUtils = jwtUtils;
+        _accessor = accessor;
     }
 
 	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request)
@@ -35,7 +39,7 @@ public class UserService : IUserService
         return response;
 	}
 
-	public async Task<User> Create(CreateRequest request)
+	public async Task<User> Create(UserCreateRequest request)
 	{
         var existingUser = await _userRepository.Count(request.UserName, request.EmailAddress);
         if (existingUser > 0)
@@ -60,7 +64,14 @@ public class UserService : IUserService
         return user;
     }
 
-    public async Task Update(int id, UpdateRequest request)
+    public int GetActiveUserId()
+    {
+        string userIdText = _accessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+
+        return int.Parse(userIdText);
+    }
+
+    public async Task Update(int id, UserUpdateRequest request)
 	{
         var user = await _userRepository.GetById(id);
         if(user is null)

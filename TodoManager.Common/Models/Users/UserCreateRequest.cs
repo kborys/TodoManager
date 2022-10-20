@@ -2,7 +2,7 @@
 
 namespace TodoManager.Common.Models.Users;
 
-public class CreateRequest
+public class UserCreateRequest
 {
     [Required]
     [MinLength(6)]
@@ -23,7 +23,7 @@ public class CreateRequest
     [EmailAddress]
     public string EmailAddress { get; set; }
 
-    public CreateRequest(string userName, string firstName, string lastName, string password, string emailAddress)
+    public UserCreateRequest(string userName, string firstName, string lastName, string password, string emailAddress)
     {
         UserName = userName;
         FirstName = firstName;

@@ -9,25 +9,22 @@ namespace TodoManager.Infrastructure.Data;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IConfiguration _config;
     private readonly string _connString;
-    private const string _table = "[User]";
 
     public UserRepository(IConfiguration config)
     {
-        _config = config;
-        _connString = _config.GetConnectionString("Default");
+        _connString = config.GetConnectionString("Default");
     }
 
     private IDbConnection Connection => new SqlConnection(_connString);
 
-    public async Task<int> Create(CreateRequest request)
+    public async Task<int> Create(UserCreateRequest request)
     {
-        const string sql = $"DECLARE @InsertedRows AS TABLE (Id int);" +
-            $"INSERT INTO {_table} (UserName, FirstName, LastName, Password, EmailAddress) " +
-            $"OUTPUT INSERTED.UserId INTO @InsertedRows " +
-            $"VALUES (@UserName, @FirstName, @LastName, @Password, @EmailAddress); " +
-            $"SELECT Id FROM @InsertedRows";
+        const string sql = "DECLARE @InsertedRows AS TABLE (Id int);" +
+            "INSERT INTO [User] (UserName, FirstName, LastName, Password, EmailAddress) " +
+            "OUTPUT INSERTED.UserId INTO @InsertedRows " +
+            "VALUES (@UserName, @FirstName, @LastName, @Password, @EmailAddress); " +
+            "SELECT Id FROM @InsertedRows";
 
         using var connection = Connection;
 
@@ -36,7 +33,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetById(int id)
     {
-        const string sql = $"SELECT * FROM {_table} WHERE UserId = @UserId;";
+        const string sql = "SELECT * FROM [User] WHERE UserId = @UserId;";
 
         using var connection = Connection;
 
@@ -45,7 +42,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> GetByUserName(string userName)
     {
-        const string sql = $"SELECT * FROM {_table} WHERE UserName = @UserName;";
+        const string sql = "SELECT * FROM [User] WHERE UserName = @UserName;";
 
         using var connection = Connection;
 
@@ -54,9 +51,9 @@ public class UserRepository : IUserRepository
 
     public async Task Update(User user)
     {
-        const string sql = $"UPDATE {_table} " +
-            $"SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
-            $"WHERE UserId = @UserId;";
+        const string sql = "UPDATE [User] " +
+            "SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
+            "WHERE UserId = @UserId;";
 
         using var connection = Connection;
 
@@ -65,7 +62,7 @@ public class UserRepository : IUserRepository
 
     public async Task Delete(int id)
     {
-        const string sql = $"DELETE FROM {_table} WHERE UserId = @UserId;";
+        const string sql = "DELETE FROM [User] WHERE UserId = @UserId;";
 
         IDbConnection connection = new SqlConnection(_connString);
 
@@ -74,9 +71,9 @@ public class UserRepository : IUserRepository
 
     public async Task<int> Count(string userName, string emailAddress)
     {
-        const string sql = $"SELECT COUNT(*) " +
-            $"FROM {_table} " +
-            $"WHERE UserName = @UserName OR EmailAddress = @EmailAddress";
+        const string sql = "SELECT COUNT(*) " +
+            "FROM [User] " +
+            "WHERE UserName = @UserName OR EmailAddress = @EmailAddress";
 
         using var connection = Connection;
 

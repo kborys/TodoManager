@@ -11,6 +11,9 @@ public static class DependencyInjectionExtensions
     public static void AddCoreModules(this IServiceCollection services)
     {
         services.AddTransient<IJwtUtils, JwtUtils>();
+
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ITodoService, TodoService>();
+        services.AddScoped<IGroupService, GroupService>();
     }
 }

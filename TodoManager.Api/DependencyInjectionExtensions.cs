@@ -72,5 +72,7 @@ public static class DependencyInjectionExtensions
                             builder.Configuration.GetValue<string>("Authentication:SecretKey")))
                 };
             });
+
+        builder.Services.AddHttpContextAccessor();
     }
 }
