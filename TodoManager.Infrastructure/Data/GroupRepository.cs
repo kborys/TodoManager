@@ -4,6 +4,7 @@ using System.Data;
 using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Models.Groups;
 using Dapper;
+using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Infrastructure.Data;
 
@@ -17,7 +18,17 @@ public class GroupRepository : IGroupRepository
     }
 
     private IDbConnection Connection => new SqlConnection(_connString);
-    public async Task<int> Create(GroupCreateRequest request)
+
+    public async Task AssignUser(int userId, int groupId)
+    {
+        const string sql = "INSERT INTO [UserGroupRelation] (UserId, GroupId) VALUES ( @UserId, @GroupId );";
+
+        using var connection = Connection;
+
+        await Connection.ExecuteAsync(sql, new { UserId = userId, GroupId = groupId });
+    }
+
+    public async Task<int> Create(GroupCreateRequest request, int requestedBy)
     {
         const string sql = 
             "DECLARE @InsertedRows AS TABLE (Id int);" +
@@ -32,12 +43,16 @@ public class GroupRepository : IGroupRepository
 
         using var connection = Connection;
 
-        return await Connection.ExecuteScalarAsync<int>(sql, request);
+        return await Connection.ExecuteScalarAsync<int>(sql, new { Name = request.Name, OwnerId = requestedBy });
     }
 
     public async Task Delete(int groupId)
     {
-        throw new NotImplementedException();
+        const string sql = "DELETE FROM [Group] WHERE GroupId = @GroupId;";
+
+        using var connection = Connection;
+
+        await Connection.ExecuteAsync(sql, new { GroupId = groupId });
     }
 
     public async Task<IEnumerable<Group>> GetAllByUser(int userId)
@@ -49,5 +64,40 @@ public class GroupRepository : IGroupRepository
         using var connection = Connection;
 
         return await connection.QueryAsync<Group>(sql, new { UserId = userId });
+    }
+
+    public async Task<Group?> GetById(int userId, int groupId)
+    {
+        const string sql = "SELECT g.* " +
+            "FROM [Group] AS g " +
+            "INNER JOIN UserGroupRelation AS ug ON g.GroupId = ug.GroupId " +
+            "WHERE g.GroupId = @GroupId AND ug.UserId = @UserId;";
+
+        using var connection = Connection;
+
+        return await connection.QueryFirstOrDefaultAsync<Group>(sql, new { GroupId = groupId, UserId = userId });
+    }
+
+    public async Task<IEnumerable<User>> GetGroupMembers(int groupId)
+    {
+        const string sql = "SELECT u.UserId, u.UserName, u.FirstName, u.LastName, u.[Password], u.EmailAddress " +
+            "FROM [UserGroupRelation] AS ug " +
+            "INNER JOIN [User] AS u ON ug.UserId = u.UserId " +
+            "WHERE ug.GroupId = @GroupId;";
+
+        using var connection = Connection;
+
+        return await connection.QueryAsync<User>(sql, new { GroupId = groupId });
+    }
+
+    public async Task Update(GroupUpdateRequest request, int groupId)
+    {
+        const string sql = "UPDATE [Group] " +
+            "SET Name = @Name " +
+            "WHERE GroupId = @GroupId;";
+
+        using var connection = Connection;
+
+        await connection.ExecuteAsync(sql, new { Name = request.Name, GroupId = groupId });
     }
 }

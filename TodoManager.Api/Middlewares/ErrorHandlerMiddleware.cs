@@ -26,6 +26,7 @@ public class ErrorHandlerMiddleware
 			{
 				NotFoundException => StatusCodes.Status404NotFound,
 				DuplicateException => StatusCodes.Status409Conflict,
+				UnauthorizedAccessException => StatusCodes.Status403Forbidden,
 				_ => StatusCodes.Status500InternalServerError
 			};
 

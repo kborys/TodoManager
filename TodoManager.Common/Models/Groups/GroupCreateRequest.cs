@@ -9,13 +9,8 @@ public class GroupCreateRequest
     [MaxLength(20)]
     public string Name { get; set; }
 
-    [Required]
-    [Range(minimum: 1, maximum: int.MaxValue)]
-    public int OwnerId { get; set; }
-
-    public GroupCreateRequest(string name, int ownerId)
+    public GroupCreateRequest(string name)
     {
         Name = name;
-        OwnerId = ownerId;
     }
 }

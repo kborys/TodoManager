@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Models.Todos;
 

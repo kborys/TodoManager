@@ -64,6 +64,14 @@ public class UserService : IUserService
         return user;
     }
 
+    public async Task<User?> GetByUserName(string userName)
+    {
+        var user = await _userRepository.GetByUserName(userName);
+
+        return user;
+    }
+
+
     public int GetActiveUserId()
     {
         string userIdText = _accessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
