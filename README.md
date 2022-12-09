@@ -13,13 +13,17 @@ Practice C# and SQL, learn the fundamentals of software development, .NET and re
 ###### - Get a group by its id only if you are a member of that group.
 ###### - Add user to a group using username. You can only add a member if you are the owner.
 
+## Implemented FrontEnd features
+#### Placeholder
+
 ## What are my goals?
-Create a Blazor Server app that manages Todos and utilizates my WebAPI.
+Create an Angular app that manages Todos and utilizates my WebAPI.
 
 ## DB Schema
 Here you can see the actual [Database Schema](https://dbdiagram.io/d/634a9a8cf0018a1c5f0cfe88).
 
 ## Technologies used:
+- Angular
 - .NET 6.0
 - SWAGGER
 - Dapper

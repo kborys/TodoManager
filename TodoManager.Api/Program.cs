@@ -19,7 +19,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseDefaultFiles();
+app.UseStaticFiles();
 app.UseHttpsRedirection();
+
+app.UseCors(opts =>
+{
+    opts.WithOrigins("http://127.0.0.1:4200")
+        .AllowAnyHeader();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();
