@@ -15,21 +15,38 @@
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-sm-0">
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="/todos"
+          <a
+            class="nav-link"
+            routerLinkActive="active"
+            routerLink="/todos"
+            *ngIf="isAuthenticated"
             >Todos</a
           >
         </li>
         <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/groups">Groups</a>
+          <a class="nav-link" routerLink="/groups" *ngIf="isAuthenticated"
+            >Groups</a
+          >
         </li>
       </ul>
 
       <ul class="justify-content-end navbar-nav mb-2 mb-sm-0">
         <li class="nav-item me-2">
           <a
+            class="btn btn-danger text-uppercase fw-bold"
+            type="button"
+            (click)="onLogout()"
+            *ngIf="isAuthenticated"
+          >
+            Logout
+          </a>
+        </li>
+        <li class="nav-item me-2">
+          <a
             class="btn btn-outline-secondary text-uppercase fw-bold"
             type="button"
             routerLink="/login"
+            *ngIf="!isAuthenticated"
           >
             Login
           </a>
@@ -39,6 +56,7 @@
             class="btn btn-success text-uppercase fw-bold"
             type="button"
             routerLink="/sign-up"
+            *ngIf="!isAuthenticated"
           >
             Sign up</a
           >

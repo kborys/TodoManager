@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-signup',
@@ -8,24 +9,12 @@ import { NgForm } from '@angular/forms';
 })
 export class SignupComponent {
   @ViewChild('form') ngForm: NgForm;
+  // user: User = new User();
 
-  user: {
-    userName: string;
-    firstName: string;
-    lastName: string;
-    password: String;
-    email: String;
-  };
+  constructor() {}
 
-  login(): void {
-    this.user = {
-      userName: this.ngForm.form.value['userName'],
-      firstName: this.ngForm.form.value['firstName'],
-      lastName: this.ngForm.form.value['lastName'],
-      password: this.ngForm.form.value['password'],
-      email: this.ngForm.form.value['email'],
-    };
-
-    console.log(this.user);
+  signUp(): void {
+    // this.user = this.ngForm.form.value['userData'];
+    console.log('signup placeholder');
   }
 }
