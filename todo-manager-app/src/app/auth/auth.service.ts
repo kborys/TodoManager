@@ -1,8 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, catchError, tap } from 'rxjs';
+import { BehaviorSubject, tap } from 'rxjs';
 import { User } from '../models/user.model';
+import { Buffer } from 'buffer';
 
 interface AuthResponseData {
   user: {
@@ -49,9 +50,7 @@ export class AuthService {
   }
 
   private handleAuthentication(authResponse: AuthResponseData) {
-    // TODO: token expiration date set to 1 hour. update the api to return "expiresIn" value
-    const expiresIn = 60 * 60;
-    const expirationDate = new Date(new Date().getTime() + 1000 * expiresIn);
+    const expirationDate = this.getTokenExpirationDate(authResponse.token);
     const user = new User(
       authResponse.user.userId,
       authResponse.user.userName,
@@ -62,8 +61,16 @@ export class AuthService {
       expirationDate
     );
     this.user.next(user);
-    this.autoLogout(expiresIn * 1000);
+    const expiresIn = expirationDate.getTime() - Date.now();
+    this.autoLogout(expiresIn);
     localStorage.setItem('userData', JSON.stringify(user));
+  }
+
+  private getTokenExpirationDate(token): Date {
+    const payloadBase64 = token.split('.')[1];
+    const decodedJson = Buffer.from(payloadBase64, 'base64').toString();
+    const decoded = JSON.parse(decodedJson);
+    return new Date(decoded.exp * 1000);
   }
 
   logout() {

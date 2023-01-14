@@ -30,12 +30,14 @@ public class JwtUtils : IJwtUtils
             new(JwtRegisteredClaimNames.UniqueName, user.UserName)
         };
 
+        var expiresInMinutes = int.Parse(_config["Authentication:ExpiresInMinutes"]);
+        var expirationDate = DateTime.UtcNow.AddMinutes(expiresInMinutes);
         var token = new JwtSecurityToken(
                 _config["Authentication:Issuer"],
                 _config["Authentication:Audience"],
                 claims,
                 DateTime.UtcNow,
-                DateTime.UtcNow.AddHours(1),
+                expirationDate,
                 signingCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
