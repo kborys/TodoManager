@@ -1,4 +1,7 @@
-<div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4 ms-auto me-auto p-2">
+<div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4 mx-auto p-2">
+  <div class="alert alert-danger" *ngIf="!isDataValid">
+    {{ errorMessage }}
+  </div>
   <form (ngSubmit)="onSubmit()" #form="ngForm">
     <div class="form-group mb-2">
       <label for="userName" class="form-label">Username</label>

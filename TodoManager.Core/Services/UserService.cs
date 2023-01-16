@@ -43,7 +43,7 @@ public class UserService : IUserService
 	{
         var existingUser = await _userRepository.Count(request.UserName, request.EmailAddress);
         if (existingUser > 0)
-            throw new DuplicateException($"Username or EmailAddress is already taken. Please try again.");
+            throw new AlreadyExistsException($"Username or email address already in use.");
         
         request.UserName = request.UserName.Trim();
         request.Password = SecretHasher.Hash(request.Password);

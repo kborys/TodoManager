@@ -11,6 +11,8 @@ import { AuthService } from '../auth/auth.service';
 export class LoginComponent {
   @ViewChild('form')
   loginForm: NgForm;
+  isDataValid = true;
+  errorMessage = '';
 
   constructor(private authService: AuthService, private router: Router) {}
 
@@ -19,10 +21,14 @@ export class LoginComponent {
       .login(this.loginForm.value.userName, this.loginForm.value.password)
       .subscribe({
         next: (response) => {
+          this.isDataValid = true;
           this.router.navigate(['/todos']);
         },
         error: (error) => {
-          console.log(error);
+          this.isDataValid = false;
+          if (error.error.status === 401)
+            this.errorMessage =
+              "Email address or password you've entered is incorrect.";
         },
       });
 

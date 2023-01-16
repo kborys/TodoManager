@@ -25,7 +25,7 @@ public class ErrorHandlerMiddleware
 			context.Response.StatusCode = error switch
 			{
 				NotFoundException => StatusCodes.Status404NotFound,
-				DuplicateException => StatusCodes.Status409Conflict,
+				AlreadyExistsException => StatusCodes.Status409Conflict,
 				UnauthorizedAccessException => StatusCodes.Status403Forbidden,
 				_ => StatusCodes.Status500InternalServerError
 			};

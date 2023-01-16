@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { User } from '../models/user.model';
+import { AuthService } from '../auth/auth.service';
+import { UserCreateRequest } from '../models/userCreateRequest.model';
 
 @Component({
   selector: 'app-signup',
@@ -9,12 +10,26 @@ import { User } from '../models/user.model';
 })
 export class SignupComponent {
   @ViewChild('form') ngForm: NgForm;
-  // user: User = new User();
+  isSignedUp = false;
+  isDataValid = true;
+  errorMessage = '';
 
-  constructor() {}
+  constructor(private authService: AuthService) {}
 
   signUp(): void {
-    // this.user = this.ngForm.form.value['userData'];
-    console.log('signup placeholder');
+    const user: UserCreateRequest = this.ngForm.form.value['user'];
+
+    this.authService.signup(user).subscribe({
+      next: (response) => {
+        this.isDataValid = true;
+        this.isSignedUp = true;
+        this.ngForm.reset();
+      },
+      error: (error) => {
+        this.errorMessage = error.error.message;
+        this.ngForm.form.patchValue({ userData: { password: '' } });
+        this.isDataValid = false;
+      },
+    });
   }
 }
