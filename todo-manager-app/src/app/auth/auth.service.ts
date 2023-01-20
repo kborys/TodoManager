@@ -2,9 +2,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
-import { User } from '../models/user.model';
+import { User } from '../../shared/models/user.model';
 import { Buffer } from 'buffer';
-import { UserCreateRequest } from '../models/userCreateRequest.model';
+import { UserCreateRequest } from '../../shared/models/userCreateRequest.model';
 
 interface AuthResponseData {
   user: {
@@ -80,6 +80,7 @@ export class AuthService {
     const expiresIn = expirationDate.getTime() - Date.now();
     this.autoLogout(expiresIn);
     localStorage.setItem('user', JSON.stringify(user));
+    this.router.navigate(['/group']);
   }
 
   private getTokenExpirationDate(token): Date {

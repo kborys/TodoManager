@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col">
+      <div class="list-group" *ngFor="let todo of todos">
+        <a class="list-group-item list-group-item-action" aria-current="true">
+          <h5 class="mb-1">{{ todo.title }}</h5>
+          <p class="mb-1">{{ todo.description }}</p>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col">
+      <button class="btn btn-success">Add todo</button>
+    </div>
+  </div>
+</div>

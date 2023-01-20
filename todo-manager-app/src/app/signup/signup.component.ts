@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
-import { UserCreateRequest } from '../models/userCreateRequest.model';
+import { UserCreateRequest } from '../../shared/models/userCreateRequest.model';
 
 @Component({
   selector: 'app-signup',

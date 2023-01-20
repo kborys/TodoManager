@@ -22,16 +22,14 @@ export class LoginComponent {
       .subscribe({
         next: (response) => {
           this.isDataValid = true;
-          this.router.navigate(['/todos']);
         },
         error: (error) => {
           this.isDataValid = false;
           if (error.error.status === 401)
             this.errorMessage =
-              "Email address or password you've entered is incorrect.";
+              "Username or password you've entered is incorrect.";
+          this.loginForm.form.patchValue({ password: '' });
         },
       });
-
-    this.loginForm.reset();
   }
 }

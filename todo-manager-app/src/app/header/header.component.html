@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm bg-light">
+<nav class="navbar navbar-dark bg-dark navbar-expand-sm">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Todo Manager</a>
     <button
@@ -18,13 +18,8 @@
           <a
             class="nav-link"
             routerLinkActive="active"
-            routerLink="/todos"
+            routerLink="/group"
             *ngIf="isAuthenticated"
-            >Todos</a
-          >
-        </li>
-        <li class="nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/groups" *ngIf="isAuthenticated"
             >Groups</a
           >
         </li>
@@ -43,7 +38,7 @@
         </li>
         <li class="nav-item me-2">
           <a
-            class="btn btn-outline-secondary text-uppercase fw-bold"
+            class="btn btn-outline-light text-uppercase fw-bold"
             type="button"
             routerLink="/login"
             *ngIf="!isAuthenticated"
