@@ -2,9 +2,8 @@
 
 public enum Status
 {
-    Todo,
     Deleted,
-    Pending,
+    Todo,
     DoToday,
     InProgress,
     Done

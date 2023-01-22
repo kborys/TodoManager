@@ -8,21 +8,20 @@ import { GroupsService } from './groups.service';
   selector: 'app-groups',
   templateUrl: './group.component.html',
   styleUrls: ['./group.component.css'],
+  host: {
+    class: 'flex-fill d-flex flex-column',
+  },
 })
 export class GroupComponent implements OnInit, OnDestroy {
-  group: Group;
+  group: Group = {} as Group;
   groupSub: Subscription;
 
   constructor(
     private groupsService: GroupsService,
-    private router: Router,
     private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    let actualGroupId = this.route.snapshot.params['id'];
-    console.log(actualGroupId);
-
     this.route.params.subscribe((params: Params) => {
       const groupId = params['id'];
       this.groupSub = this.groupsService

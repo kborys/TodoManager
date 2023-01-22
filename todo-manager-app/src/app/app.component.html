@@ -1,11 +1,9 @@
-<header>
-  <app-header></app-header>
-</header>
-<main class="container">
-  <div class="row">
-    <div class="col-xs-12">
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</main>
-<footer></footer>
+<div class="d-flex flex-column min-vh-100">
+  <header>
+    <app-header></app-header>
+  </header>
+  <main class="container-fluid bg-light flex-fill d-flex flex-column">
+    <router-outlet></router-outlet>
+  </main>
+  <footer></footer>
+</div>

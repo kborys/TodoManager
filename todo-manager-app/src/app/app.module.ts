@@ -12,6 +12,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { GroupComponent } from './groups/group.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TodosListComponent } from './groups/todos-list/todos-list.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HomeComponent,
     LoginComponent,
     SignupComponent,
+    TodosListComponent,
   ],
   imports: [
     BrowserModule,

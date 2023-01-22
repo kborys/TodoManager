@@ -1,8 +1,7 @@
 export enum Status {
-  Todo,
   Deleted,
-  Pending,
-  ToToday,
+  Todo,
+  DoToday,
   InProgress,
   Done,
 }
