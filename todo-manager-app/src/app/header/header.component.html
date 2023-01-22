@@ -14,14 +14,31 @@
     </button>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-        <li class="nav-item">
-          <a
-            class="nav-link"
-            routerLinkActive="active"
-            routerLink="/group"
+        <li class="nav-item me-2" ngbDropdown #groupsDrop="ngbDropdown">
+          <button
+            type="button"
+            class="btn btn-dark"
+            id="groupsDropdown"
+            ngbDropdownToggle
             *ngIf="isAuthenticated"
-            >Groups</a
           >
+            Groups
+          </button>
+          <div ngbDropdownMenu aria-labelledby="groupsDropdown">
+            <a
+              class="test"
+              ngbDropdownItem
+              *ngFor="let group of groups"
+              [routerLink]="['/group/' + group.groupId]"
+              routerLinkActive="custom-active"
+            >
+              {{ group.name }}
+            </a>
+            <hr />
+            <a class="d-block text-center">
+              <button class="btn btn-success">Create group</button>
+            </a>
+          </div>
         </li>
       </ul>
 

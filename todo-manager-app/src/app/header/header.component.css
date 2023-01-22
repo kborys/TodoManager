@@ -1,0 +1,9 @@
+.custom-active {
+  font-weight: bold;
+  border-left: 3px solid orange;
+}
+
+.test:active,
+.test:focus {
+  background-color: none !important;
+}

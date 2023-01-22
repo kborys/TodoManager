@@ -10,20 +10,25 @@ import { SignupComponent } from './signup/signup.component';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
-import { GroupsComponent } from './groups/groups.component';
-import { TodosListComponent } from './groups/todos-list/todos-list.component';
+import { GroupComponent } from './groups/group.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    GroupsComponent,
+    GroupComponent,
     HomeComponent,
     LoginComponent,
     SignupComponent,
-    TodosListComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    NgbModule,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
