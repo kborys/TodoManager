@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Models.Groups;
+using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Api.Controllers;
 
@@ -10,20 +11,21 @@ public class GroupsController : ControllerBase
 {
     private readonly IGroupService _groupService;
     private readonly IUserService _userService;
+    private readonly ITodoService _todoService;
 
-    public GroupsController(IGroupService groupService, IUserService userService)
+    public GroupsController(IGroupService groupService, IUserService userService, ITodoService todoService)
     {
         _groupService = groupService;
         _userService = userService;
+        _todoService = todoService;
     }
 
     [HttpPost]
     public async Task<ActionResult<Group>> Create(GroupCreateRequest request)
     {
-        var activeUserId = _userService.GetActiveUserId();
-        var newGroup = await _groupService.Create(request, activeUserId);
+        var newGroup = await _groupService.Create(request);
 
-        return CreatedAtRoute("GetGroupById", new { id = newGroup.GroupId }, newGroup);
+        return CreatedAtRoute("GetGroupById", new { groupId = newGroup.GroupId }, newGroup);
     }
 
     [HttpGet]
@@ -35,27 +37,33 @@ public class GroupsController : ControllerBase
         return Ok(groups);
     }
 
-    [HttpGet("{id:int}", Name = "GetGroupById")]
-    public async Task<ActionResult<Group?>> GetById(int id)
+    [HttpGet("{groupId:int}", Name = "GetGroupById")]
+    public async Task<ActionResult<Group?>> GetById(int groupId)
     {
-        var activeUserId = _userService.GetActiveUserId();
-        var group = await _groupService.GetById(activeUserId, id);
+        var group = await _groupService.GetById(groupId);
         if(group is null)
-            return NotFound("Group with given id doesn't exist in the database or you are not a member of this group.");
+            return NotFound("Group with given id doesn't exist in the database.");
 
         return Ok(group);
     }
 
-    [HttpPost("/{groupId:int}/members")]
+    [HttpGet("{groupId:int}/Todos")]
+    public async Task<ActionResult<IEnumerable<Todo>>> GetAll(int groupId)
+    {
+        var todos = await _todoService.GetAllByGroup(groupId);
+
+        return Ok(todos);
+    }
+
+    [HttpPost("{groupId:int}/Members")]
     public async Task<ActionResult> AddUser(int groupId, AddGroupMemberRequest request)
     {
         var user = await _userService.GetByUserName(request.UserName);
         if(user is null)
             return NotFound("User with such UserName doesn't exist in the database.");
 
-        var activeUserId = _userService.GetActiveUserId();
-        await _groupService.AssignUser(user.UserId, activeUserId, groupId);
+        await _groupService.AssignUser(user.UserId, groupId);
         
-        return Ok($"User successfully added to group.");
+        return Ok("User successfully added to group.");
     }
 }

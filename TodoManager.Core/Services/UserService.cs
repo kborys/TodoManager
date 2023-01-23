@@ -74,7 +74,7 @@ public class UserService : IUserService
 
     public int GetActiveUserId()
     {
-        string userIdText = _accessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
+        var userIdText = _accessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
 
         return int.Parse(userIdText);
     }

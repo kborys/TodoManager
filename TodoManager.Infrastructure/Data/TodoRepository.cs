@@ -20,15 +20,36 @@ public class TodoRepository : ITodoRepository
 
     public async Task<int> Create(TodoCreateRequest request)
     {
-        throw new NotImplementedException();
+        const string sql = 
+            "DECLARE @InsertedRows AS TABLE (Id int);" +
+            "INSERT INTO [Todo] (Title, Description, GroupId, OwnerId, Status) " +
+            "OUTPUT INSERTED.TodoId INTO @InsertedRows " +
+            "VALUES (@Title, @Description, @GroupId, @OwnerId, @Status); " +
+            "SELECT Id FROM @InsertedRows";
+        using var connection = Connection;
+
+        return await Connection.ExecuteScalarAsync<int>(sql,
+            new
+            {
+                Title = request.Title, Description = request.Description, GroupId = request.GroupId,
+                OwnerId = request.OwnerId, Status = request.Status
+            });
     }
 
     public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId)
     {
-        const string sql = $"SELECT * FROM [Todo] WHERE GroupId = @GroupId;";
+        const string sql = "SELECT * FROM [Todo] WHERE GroupId = @GroupId;";
         using var connection = Connection;
 
         return await connection.QueryAsync<Todo>(sql, new { GroupId = groupId});
+    }
+
+    public async Task<Todo?> GetById(int todoId)
+    {
+        const string sql = "SELECT * FROM [Todo] WHERE TodoId = @TodoId;";
+        using var connection = Connection;
+
+        return await connection.QueryFirstOrDefaultAsync<Todo>(sql, new { TodoId = todoId });
     }
 
     public async Task Delete(int todoId)

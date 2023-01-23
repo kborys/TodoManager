@@ -66,16 +66,13 @@ public class GroupRepository : IGroupRepository
         return await connection.QueryAsync<Group>(sql, new { UserId = userId });
     }
 
-    public async Task<Group?> GetById(int userId, int groupId)
+    public async Task<Group?> GetById(int groupId)
     {
-        const string sql = "SELECT g.* " +
-            "FROM [Group] AS g " +
-            "INNER JOIN UserGroupRelation AS ug ON g.GroupId = ug.GroupId " +
-            "WHERE g.GroupId = @GroupId AND ug.UserId = @UserId;";
+        const string sql = "SELECT * FROM [Group] WHERE GroupId = @GroupId";
 
         using var connection = Connection;
 
-        return await connection.QueryFirstOrDefaultAsync<Group>(sql, new { GroupId = groupId, UserId = userId });
+        return await connection.QueryFirstOrDefaultAsync<Group>(sql, new { GroupId = groupId});
     }
 
     public async Task<IEnumerable<User>> GetGroupMembers(int groupId)

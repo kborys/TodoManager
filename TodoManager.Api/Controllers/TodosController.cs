@@ -4,7 +4,7 @@ using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Api.Controllers;
 
-[Route("api/Groups/{groupId:int}/[controller]")]
+[Route("api/[controller]")]
 [ApiController]
 public class TodosController : ControllerBase
 {
@@ -17,12 +17,22 @@ public class TodosController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Todo>>> GetAll(int groupId)
+    [HttpGet("{todoId:int}", Name = "GetTodoById")]
+    public async Task<ActionResult<Todo?>> GetById(int todoId)
     {
-        int activeUserId = _userService.GetActiveUserId();
-        var todos = await _todoService.GetAllByGroup(activeUserId, groupId);
+        var todo = await _todoService.GetById(todoId);
 
-        return Ok(todos);
+        return Ok(todo);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Todo>> Create(TodoCreateRequest request)
+    {
+        var activeUserId = _userService.GetActiveUserId();
+        if (activeUserId != request.OwnerId)
+            return BadRequest();
+        var newTodo = await _todoService.Create(request);
+
+        return CreatedAtRoute("GetTodoById", new { todoId = newTodo.TodoId }, newTodo);
     }
 }

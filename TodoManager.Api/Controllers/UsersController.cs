@@ -17,7 +17,7 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("authenticate")]
+    [HttpPost("Authenticate")]
     [AllowAnonymous]
     public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest request)
     {
@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("register")]
+    [HttpPost("Register")]
     [AllowAnonymous]
     public async Task<IActionResult> Register(UserCreateRequest request)
     {
