@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
-import { Group } from 'src/shared/models/group.model';
+import { Group } from 'src/app/shared/models/group.model';
 import { AuthService } from '../auth/auth.service';
 import { GroupsService } from '../groups/groups.service';
 

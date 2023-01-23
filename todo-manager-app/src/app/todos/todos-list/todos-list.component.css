@@ -1,0 +1,19 @@
+.bi {
+  vertical-align: -0.125em;
+  width: 1em;
+  height: 1em;
+}
+
+.customAddTaskButton {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  color: rgb(0, 192, 0);
+}
+
+.customAddTaskButton:hover {
+  background-color: lightgray;
+  border-radius: 50% !important;
+  color: green;
+}

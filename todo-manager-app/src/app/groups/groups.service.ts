@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { Group } from '../../shared/models/group.model';
+import { Group } from '../shared/models/group.model';
 
 @Injectable({ providedIn: 'root' })
 export class GroupsService {

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs';
-import { TodoItem } from 'src/shared/models/todo-item.model';
+import { TodoItem } from 'src/app/shared/models/todo-item.model';
 
 @Injectable({ providedIn: 'root' })
 export class TodosService {

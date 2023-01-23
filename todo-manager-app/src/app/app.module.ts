@@ -12,7 +12,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { GroupComponent } from './groups/group.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TodosListComponent } from './groups/todos-list/todos-list.component';
+import { TodosListComponent } from './todos/todos-list/todos-list.component';
+import { FilterTodosPipe } from './todos/todos-list/filter-todos.pipe';
+import { TodoItemComponent } from './todos/todos-list/todo-item/todo-item.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { TodosListComponent } from './groups/todos-list/todos-list.component';
     LoginComponent,
     SignupComponent,
     TodosListComponent,
+    FilterTodosPipe,
+    TodoItemComponent,
   ],
   imports: [
     BrowserModule,

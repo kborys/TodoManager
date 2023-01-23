@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Group } from 'src/shared/models/group.model';
+import { Group } from 'src/app/shared/models/group.model';
 import { GroupsService } from './groups.service';
 
 @Component({
@@ -37,30 +37,3 @@ export class GroupComponent implements OnInit, OnDestroy {
     this.groupSub.unsubscribe();
   }
 }
-
-/*
-  todos: TodoItem[] = [];
-  todosSub: Subscription;
-
-  constructor(
-    private todosService: TodosService,
-    private route: ActivatedRoute
-  ) {}
-
-  ngOnInit(): void {
-    this.route.params.subscribe((params) => {
-      const groupId = params['id'];
-      this.todosSub = this.todosService
-        .getTodos(groupId)
-        .subscribe((response) => {
-          this.todos = response;
-        });
-      localStorage.setItem('lastGroupId', groupId);
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.todosSub.unsubscribe();
-  }
-
-*/

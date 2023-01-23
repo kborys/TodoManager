@@ -1,0 +1,39 @@
+<div class="container-fluid flex-fill d-flex flex-column mb-2">
+  <div class="row flex-fill bg-white border">
+    <div
+      *ngFor="let status of viewStatuses"
+      class="col d-flex flex-column border"
+    >
+      <div
+        class="row border-bottom border-2 align-items-center text-center bg-light"
+      >
+        <div class="col">
+          <h6 class="text-dark fw-bold align-middle h-100 mb-0">
+            {{ status }}
+          </h6>
+        </div>
+        <div class="col-auto p-0">
+          <button class="customAddTaskButton">
+            <svg
+              class="bi bi-plus fs-1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="row d-block flex-fill p-2">
+        <div class="p-0 m-0" *ngFor="let todo of todos | filterTodos : status">
+          <app-todo-item [todo]="todo"></app-todo-item>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
