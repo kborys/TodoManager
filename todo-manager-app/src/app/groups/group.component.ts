@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { Group } from 'src/app/shared/models/group.model';
 import { GroupsService } from './groups.service';
 
@@ -12,9 +11,8 @@ import { GroupsService } from './groups.service';
     class: 'flex-fill d-flex flex-column',
   },
 })
-export class GroupComponent implements OnInit, OnDestroy {
+export class GroupComponent implements OnInit {
   group: Group = {} as Group;
-  groupSub: Subscription;
 
   constructor(
     private groupsService: GroupsService,
@@ -24,16 +22,10 @@ export class GroupComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
       const groupId = params['id'];
-      this.groupSub = this.groupsService
-        .getGroup(groupId)
-        .subscribe((response) => {
-          this.group = response;
-        });
+      this.groupsService.getGroup(groupId).subscribe((response) => {
+        this.group = response;
+      });
       localStorage.setItem('lastGroupId', groupId);
     });
-  }
-
-  ngOnDestroy(): void {
-    this.groupSub.unsubscribe();
   }
 }

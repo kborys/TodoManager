@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Group } from '../shared/models/group.model';
 
 @Injectable({ providedIn: 'root' })
@@ -9,24 +9,23 @@ export class GroupsService {
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });
+  private groups: Group[] = [];
+  groupsChanged = new Subject<Group[]>();
 
   constructor(private http: HttpClient) {}
 
   getGroup(groupId: number) {
     const url = this.baseUrl + '/' + groupId;
-    return this.http.get<Group>(url, { headers: this.headers }).pipe(
-      map((group) => {
-        return group;
-      })
-    );
+    return this.http.get<Group>(url, { headers: this.headers });
   }
 
   getGroups() {
     const url = this.baseUrl;
-    return this.http.get<Group[]>(url, { headers: this.headers }).pipe(
-      map((groups) => {
-        return groups;
-      })
-    );
+    this.http
+      .get<Group[]>(url, { headers: this.headers })
+      .subscribe((groups: Group[]) => {
+        this.groups = groups;
+        this.groupsChanged.next(this.groups.slice());
+      });
   }
 }

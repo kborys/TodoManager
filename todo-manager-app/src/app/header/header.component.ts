@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs';
 import { Group } from 'src/app/shared/models/group.model';
 import { AuthService } from '../auth/auth.service';
@@ -13,7 +12,7 @@ import { GroupsService } from '../groups/groups.service';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   userSub: Subscription;
-  groupSub: Subscription;
+  groupsSub: Subscription;
   isAuthenticated = false;
   groups: Group[] = [];
 
@@ -29,13 +28,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
       if (this.isAuthenticated) {
         const groupId: number = +localStorage.getItem('lastGroupId');
-        this.groupSub = this.groupsService.getGroups().subscribe((response) => {
-          this.groups = response;
-          this.router.navigate([
-            '/group',
-            groupId ? groupId : this.groups[0].groupId,
-          ]);
-        });
+        this.groupsService.getGroups();
+        this.groupsSub = this.groupsService.groupsChanged.subscribe(
+          (groups: Group[]) => {
+            this.groups = groups;
+            this.router.navigate([
+              '/group',
+              groupId ? groupId : this.groups[0].groupId,
+            ]);
+          }
+        );
       }
     });
   }
@@ -46,6 +48,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.userSub.unsubscribe();
-    this.groupSub.unsubscribe();
+    this.groupsSub.unsubscribe();
   }
 }

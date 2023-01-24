@@ -1,5 +1,5 @@
 export enum Status {
-  Deleted,
+  Deleted = 1,
   Todo,
   DoToday,
   InProgress,

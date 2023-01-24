@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
 import { User } from '../shared/models/user.model';
 import { Buffer } from 'buffer';
-import { UserCreateRequest } from '../shared/models/userCreateRequest.model';
+import { UserCreate } from '../shared/models/user-create.model';
 
 interface AuthResponseData {
   user: {
@@ -30,7 +30,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  signup(user: UserCreateRequest) {
+  signup(user: UserCreate) {
     const url = this.baseUrl + 'register';
 
     return this.http.post<User>(

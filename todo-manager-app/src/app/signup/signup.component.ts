@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
-import { UserCreateRequest } from '../shared/models/userCreateRequest.model';
+import { UserCreate } from '../shared/models/user-create.model';
 
 @Component({
   selector: 'app-signup',
@@ -17,7 +17,7 @@ export class SignupComponent {
   constructor(private authService: AuthService) {}
 
   signUp(): void {
-    const user: UserCreateRequest = this.ngForm.form.value['user'];
+    const user: UserCreate = this.ngForm.form.value['user'];
 
     this.authService.signup(user).subscribe({
       next: (response) => {

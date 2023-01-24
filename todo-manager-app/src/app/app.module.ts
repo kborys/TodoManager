@@ -15,6 +15,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TodosListComponent } from './todos/todos-list/todos-list.component';
 import { FilterTodosPipe } from './todos/todos-list/filter-todos.pipe';
 import { TodoItemComponent } from './todos/todos-list/todo-item/todo-item.component';
+import { TodoItemAddModalComponent } from './todos/todos-list/todo-item-add-modal/todo-item-add-modal.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { TodoItemComponent } from './todos/todos-list/todo-item/todo-item.compon
     TodosListComponent,
     FilterTodosPipe,
     TodoItemComponent,
+    TodoItemAddModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,5 +45,6 @@ import { TodoItemComponent } from './todos/todos-list/todo-item/todo-item.compon
     },
   ],
   bootstrap: [AppComponent],
+  entryComponents: [TodoItemAddModalComponent],
 })
 export class AppModule {}
