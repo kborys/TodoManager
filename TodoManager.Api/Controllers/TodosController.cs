@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoManager.Common.Contracts.Services;
+using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Api.Controllers;
@@ -35,4 +36,13 @@ public class TodosController : ControllerBase
 
         return CreatedAtRoute("GetTodoById", new { todoId = newTodo.TodoId }, newTodo);
     }
+
+    [HttpPut("{todoId:int}")]
+    public async Task<ActionResult> Update(int todoId, [FromBody] Status status)
+    {
+        await _todoService.UpdateStatus(todoId, status);
+
+        return NoContent();
+    }
+
 }

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using TodoManager.Common.Contracts.Repositories;
+using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Infrastructure.Data;
@@ -28,17 +29,12 @@ public class TodoRepository : ITodoRepository
             "SELECT Id FROM @InsertedRows";
         using var connection = Connection;
 
-        return await Connection.ExecuteScalarAsync<int>(sql,
-            new
-            {
-                Title = request.Title, Description = request.Description, GroupId = request.GroupId,
-                OwnerId = request.OwnerId, Status = request.Status
-            });
+        return await Connection.ExecuteScalarAsync<int>(sql, request);
     }
 
     public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId)
     {
-        const string sql = "SELECT * FROM [Todo] WHERE GroupId = @GroupId;";
+        const string sql = "SELECT * FROM [Todo] WHERE GroupId = @GroupId AND Status != 1;";
         using var connection = Connection;
 
         return await connection.QueryAsync<Todo>(sql, new { GroupId = groupId});
@@ -49,11 +45,24 @@ public class TodoRepository : ITodoRepository
         const string sql = "SELECT * FROM [Todo] WHERE TodoId = @TodoId;";
         using var connection = Connection;
 
-        return await connection.QueryFirstOrDefaultAsync<Todo>(sql, new { TodoId = todoId });
+        return await connection.QueryFirstOrDefaultAsync<Todo?>(sql, new { TodoId = todoId });
+    }
+
+    public async Task Update(Todo todo)
+    {
+        const string sql = "UPDATE [Todo] " +
+            "SET Title = @Title, Description = @Description, GroupId = @GroupId, OwnerId = @OwnerId, Status = @Status " +
+            "WHERE TodoId = @TodoId;";
+        using var connection = Connection;
+
+        await connection.ExecuteAsync(sql, todo);
     }
 
     public async Task Delete(int todoId)
     {
-        throw new NotImplementedException();
+        const string sql = "DELETE FROM [Todo] WHERE TodoId = @TodoId;";
+        using var connection = Connection;
+
+        await connection.ExecuteAsync(sql, new {TodoId = todoId});
     }
 }

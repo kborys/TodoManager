@@ -1,5 +1,6 @@
 ﻿using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Contracts.Services;
+using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Core.Services;
@@ -41,5 +42,16 @@ public class TodoService : ITodoService
         await _groupService.CheckMembership(todo.GroupId);
 
         return todo;
+    }
+
+    public async Task UpdateStatus(int todoId, Status status)
+    {
+        var todo = await _todoRepository.GetById(todoId);
+        if(todo is not null)
+        {
+            await _groupService.CheckMembership(todo.GroupId);
+            todo.Status = status;
+            await _todoRepository.Update(todo);
+        }
     }
 }

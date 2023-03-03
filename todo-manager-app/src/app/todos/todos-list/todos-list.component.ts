@@ -6,6 +6,7 @@ import { Status } from 'src/app/shared/enums/status';
 import { TodoItem } from 'src/app/shared/models/todo-item.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { TodoItemAddModalComponent } from './todo-item-add-modal/todo-item-add-modal.component';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-todos-list',
@@ -27,7 +28,7 @@ export class TodosListComponent implements OnInit, OnDestroy {
     private modal: NgbModal
   ) {
     Object.keys(Status).forEach((item) => {
-      if (isNaN(Number(item)) && item != 'Deleted')
+      if (isNaN(Number(item)) && item !== 'Deleted')
         this.viewStatuses.push(item);
     });
   }
@@ -46,6 +47,13 @@ export class TodosListComponent implements OnInit, OnDestroy {
     const modalRef = this.modal.open(TodoItemAddModalComponent);
     modalRef.componentInstance.status = status;
     modalRef.componentInstance.groupId = this.groupId;
+  }
+
+  drop(event: CdkDragDrop<string>) {
+    const draggedTodo: TodoItem = event.item.data;
+    const statusStr = event.container.data;
+    const status: Status = Object.values(Status).indexOf(statusStr) + 1;
+    this.todosService.updateStatus(draggedTodo.todoId, status);
   }
 
   ngOnDestroy(): void {

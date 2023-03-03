@@ -16,6 +16,8 @@ import { TodosListComponent } from './todos/todos-list/todos-list.component';
 import { FilterTodosPipe } from './todos/todos-list/filter-todos.pipe';
 import { TodoItemComponent } from './todos/todos-list/todo-item/todo-item.component';
 import { TodoItemAddModalComponent } from './todos/todos-list/todo-item-add-modal/todo-item-add-modal.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { TodoItemAddModalComponent } from './todos/todos-list/todo-item-add-moda
     FormsModule,
     HttpClientModule,
     NgbModule,
+    BrowserAnimationsModule,
+    DragDropModule,
   ],
   providers: [
     {

@@ -24,6 +24,8 @@ Practice C# and SQL, learn the fundamentals of software development, .NET, Angul
 
 ###### - Get a todo by id
 
+###### - Update todo status
+
 ## Implemented Angular features
 
 #### 1. Authentication
@@ -42,18 +44,19 @@ Practice C# and SQL, learn the fundamentals of software development, .NET, Angul
 
 ###### - Create new todos
 
+###### - Change status with drag-and-drop
+
 ## What is the goal?
 
 Create an Angular Kanban-style todo-list management applicaiton that utilizates my .NET WebApi.
 
 ## Technologies used:
 
-- Angular, RxJS
+- Angular, Angular Material CDK, RxJS
 - Bootstrap, ngBootstrap
-- .NET 6.0
-- SWAGGER
-- Dapper
+- .NET 6.0 WebAPI documented with SWAGGER
 - JWT
+- Dapper
 - MSSQL
 
 ## How to run

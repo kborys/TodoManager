@@ -26,7 +26,8 @@ app.UseHttpsRedirection();
 app.UseCors(opts =>
 {
     opts.WithOrigins("http://localhost:4200")
-        .AllowAnyHeader();
+        .AllowAnyHeader()
+        .AllowAnyMethod();
 });
 
 app.UseAuthentication();

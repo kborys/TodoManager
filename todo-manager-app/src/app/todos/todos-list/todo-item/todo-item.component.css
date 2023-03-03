@@ -1,0 +1,18 @@
+button.cdk-drag-preview {
+  max-width: calc(100vw / 4.5);
+}
+
+/* Preview of the destination */
+.cdk-drag-placeholder {
+  background-color: lightgray;
+}
+
+/* Style of the item being dragged */
+.cdk-drag-preview {
+  background-color: white;
+}
+
+/* Animate an item that has been dropped. */
+.cdk-drag-animating {
+  transition: transform 100ms cubic-bezier(0.075, 0.82, 0.165, 1) 10ms;
+}

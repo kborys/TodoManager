@@ -1,5 +1,5 @@
 <div class="container-fluid flex-fill d-flex flex-column mb-2">
-  <div class="row flex-fill bg-white border">
+  <div class="row flex-fill bg-white border" cdkDropListGroup>
     <div
       *ngFor="let status of viewStatuses"
       class="col d-flex flex-column border"
@@ -29,7 +29,13 @@
           </button>
         </div>
       </div>
-      <div class="row d-block flex-fill p-2">
+      <div
+        class="row d-block flex-fill p-2"
+        cdkDropList
+        cdkDropListSortingDisabled
+        [cdkDropListData]="status"
+        (cdkDropListDropped)="drop($event)"
+      >
         <div class="p-0 m-0" *ngFor="let todo of todos | filterTodos : status">
           <app-todo-item [todo]="todo"></app-todo-item>
         </div>
