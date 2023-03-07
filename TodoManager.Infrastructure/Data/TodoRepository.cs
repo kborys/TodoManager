@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
 
 namespace TodoManager.Infrastructure.Data;

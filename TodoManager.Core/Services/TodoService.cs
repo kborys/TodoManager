@@ -1,5 +1,6 @@
 ﻿using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Contracts.Services;
+using TodoManager.Common.Exceptions;
 using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
 
@@ -17,9 +18,11 @@ public class TodoService : ITodoService
     }
 
 
-    public async Task<Todo> Create(TodoCreateRequest request)
+    public async Task<Todo> Create(TodoCreateRequest request, int activeUserId)
     {
-        await _groupService.CheckMembership(request.GroupId);
+        var isMember = await _groupService.IsGroupMember(request.GroupId, activeUserId);
+        if (!isMember)
+            throw new NotMemberException();
 
         var newTodoId = await _todoRepository.Create(request);
         var newTodo = new Todo(newTodoId, request.Title, request.GroupId, request.OwnerId, request.Status,
@@ -28,30 +31,39 @@ public class TodoService : ITodoService
         return newTodo;
     }
 
-    public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId)
+    public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId, int activeUserId)
     {
-        await _groupService.CheckMembership(groupId);
+        var isMember = await _groupService.IsGroupMember(groupId, activeUserId);
+        if (!isMember)
+            throw new NotMemberException();
 
         return await _todoRepository.GetAllByGroup(groupId);
     }
 
-    public async Task<Todo?> GetById(int todoId)
+    public async Task<Todo?> GetById(int todoId, int activeUserId)
     {
         var todo = await _todoRepository.GetById(todoId);
-        if(todo is null) return null;
-        await _groupService.CheckMembership(todo.GroupId);
+        if (todo is not null)
+        {
+            var isMember = await _groupService.IsGroupMember(todo.GroupId, activeUserId);
+            if (!isMember)
+                throw new NotMemberException();
+        }
 
         return todo;
     }
 
-    public async Task UpdateStatus(int todoId, Status status)
+    public async Task UpdateStatus(int todoId, Status status, int activeUserId)
     {
         var todo = await _todoRepository.GetById(todoId);
-        if(todo is not null)
-        {
-            await _groupService.CheckMembership(todo.GroupId);
-            todo.Status = status;
-            await _todoRepository.Update(todo);
-        }
+        if (todo is null)
+            throw new NotFoundException("Todo with given id does not exist");
+
+        var isMember = await _groupService.IsGroupMember(todo.GroupId, activeUserId);
+        if (!isMember)
+            throw new NotMemberException();
+
+        todo.Status = status;
+        await _todoRepository.Update(todo);
     }
 }

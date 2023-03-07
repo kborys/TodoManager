@@ -4,8 +4,6 @@ using TodoManager.Common.Helpers;
 using TodoManager.Common.Exceptions;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Contracts.Repositories;
-using Microsoft.AspNetCore.Http;
-using System.Security.Claims;
 
 namespace TodoManager.Core.Services;
 
@@ -13,13 +11,11 @@ public class UserService : IUserService
 {
 	private readonly IUserRepository _userRepository;
     private readonly IJwtUtils _jwtUtils;
-    private readonly IHttpContextAccessor _accessor;
 
-    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils, IHttpContextAccessor accessor)
+    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils)
 	{
 		_userRepository = userRepository;
         _jwtUtils = jwtUtils;
-        _accessor = accessor;
     }
 
 	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request)
@@ -33,16 +29,14 @@ public class UserService : IUserService
             return null;
 
         var token = _jwtUtils.GenerateToken(user);
-
-        AuthenticateResponse response = new(user, token);
-
+        var response = new AuthenticateResponse(user, token);
         return response;
 	}
 
 	public async Task<User> Create(UserCreateRequest request)
 	{
-        var existingUser = await _userRepository.Count(request.UserName, request.EmailAddress);
-        if (existingUser > 0)
+        var matchingUsersCount = await _userRepository.Count(request.UserName, request.EmailAddress);
+        if (matchingUsersCount > 0)
             throw new AlreadyExistsException($"Username or email address already in use.");
         
         request.UserName = request.UserName.Trim();
@@ -50,9 +44,6 @@ public class UserService : IUserService
 
         var newUser = new User(request.UserName, request.FirstName, request.LastName, request.Password, request.EmailAddress); 
         newUser.UserId = await _userRepository.Create(request);
-
-        if(newUser.UserId == 0)
-            throw new Exception("Something went wrong. Contact support");
 
         return newUser;
 	}
@@ -70,17 +61,12 @@ public class UserService : IUserService
 
         return user;
     }
-
-
-    public int GetActiveUserId()
-    {
-        var userIdText = _accessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)!.Value;
-
-        return int.Parse(userIdText);
-    }
-
-    public async Task Update(int id, UserUpdateRequest request)
+    
+    public async Task Update(int id, UserUpdateRequest request, int activeUserId)
 	{
+        if (id != activeUserId)
+            throw new UnauthorizedAccessException("Invalid user update.");
+
         var user = await _userRepository.GetById(id);
         if(user is null)
             throw new NotFoundException($"User with given id '{id}' doesn't exist in the database. Please try again.");
@@ -95,8 +81,11 @@ public class UserService : IUserService
 		await _userRepository.Update(user);
 	}
 
-    public async Task Delete(int id)
+    public async Task Delete(int id, int activeUserId)
     {
+        if (id != activeUserId)
+            throw new UnauthorizedAccessException("Invalid user delete.");
+
         await _userRepository.Delete(id);
     }
 }

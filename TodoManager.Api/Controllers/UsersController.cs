@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TodoManager.Common.Models.Users;
-using System.Security.Claims;
 using TodoManager.Common.Contracts.Services;
+using TodoManager.Api.Helpers;
 
 namespace TodoManager.Api.Controllers;
 
@@ -11,10 +11,12 @@ namespace TodoManager.Api.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IAuthHelper _authHelper;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IAuthHelper authHelper)
     {
         _userService = userService;
+        _authHelper = authHelper;
     }
 
     [HttpPost("Authenticate")]
@@ -49,10 +51,8 @@ public class UsersController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<ActionResult> Update(int id, UserUpdateRequest request)
     {
-        if(!UserIsActiveUser(id))
-            return Forbid();
-
-        await _userService.Update(id, request);
+        var activeUserId = _authHelper.GetActiveUserId();
+        await _userService.Update(id, request, activeUserId);
 
         return NoContent();
     }
@@ -60,17 +60,9 @@ public class UsersController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> Delete(int id)
     {
-        if(!UserIsActiveUser(id))
-            return Forbid();
-
-        await _userService.Delete(id);
+        var activeUserId = _authHelper.GetActiveUserId();
+        await _userService.Delete(id, activeUserId);
 
         return NoContent();
-    }
-
-    private bool UserIsActiveUser(int userId)
-    {
-        int activeUserId = _userService.GetActiveUserId();
-        return activeUserId == userId;
     }
 }

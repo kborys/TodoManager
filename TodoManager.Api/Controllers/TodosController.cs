@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoManager.Api.Helpers;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Models.Enums;
 using TodoManager.Common.Models.Todos;
@@ -10,18 +11,19 @@ namespace TodoManager.Api.Controllers;
 public class TodosController : ControllerBase
 {
     private readonly ITodoService _todoService;
-    private readonly IUserService _userService;
+    private readonly IAuthHelper _authHelper;
 
-    public TodosController(ITodoService todoService, IUserService userService)
+    public TodosController(ITodoService todoService, IAuthHelper authHelper)
     {
         _todoService = todoService;
-        _userService = userService;
+        _authHelper = authHelper;
     }
 
     [HttpGet("{todoId:int}", Name = "GetTodoById")]
     public async Task<ActionResult<Todo?>> GetById(int todoId)
     {
-        var todo = await _todoService.GetById(todoId);
+        var activeUserId = _authHelper.GetActiveUserId();
+        var todo = await _todoService.GetById(todoId, activeUserId);
 
         return Ok(todo);
     }
@@ -29,10 +31,8 @@ public class TodosController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Todo>> Create(TodoCreateRequest request)
     {
-        var activeUserId = _userService.GetActiveUserId();
-        if (activeUserId != request.OwnerId)
-            return BadRequest();
-        var newTodo = await _todoService.Create(request);
+        var activeUserId = _authHelper.GetActiveUserId();
+        var newTodo = await _todoService.Create(request, activeUserId);
 
         return CreatedAtRoute("GetTodoById", new { todoId = newTodo.TodoId }, newTodo);
     }
@@ -40,7 +40,8 @@ public class TodosController : ControllerBase
     [HttpPut("{todoId:int}")]
     public async Task<ActionResult> Update(int todoId, [FromBody] Status status)
     {
-        await _todoService.UpdateStatus(todoId, status);
+        var activeUserId = _authHelper.GetActiveUserId();
+        await _todoService.UpdateStatus(todoId, status, activeUserId);
 
         return NoContent();
     }

@@ -1,5 +1,6 @@
 ﻿using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Contracts.Services;
+using TodoManager.Common.Exceptions;
 using TodoManager.Common.Models.Groups;
 using TodoManager.Common.Models.Users;
 
@@ -8,76 +9,81 @@ namespace TodoManager.Core.Services;
 public class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
-    private readonly IUserService _userService;
 
-    public GroupService(IGroupRepository groupRepository, IUserService userService)
+    public GroupService(IGroupRepository groupRepository)
     {
         _groupRepository = groupRepository;
-        _userService = userService;
     }
 
-    public async Task AssignUser(int userId, int groupId)
+    public async Task AssignUser(int userId, int groupId, int activeUserId)
     {
-        await CheckMembership(groupId);
+        var isMember = await IsGroupMember(groupId, activeUserId);
+        if (!isMember)
+            throw new NotMemberException();
+
         await _groupRepository.AssignUser(userId, groupId);
     }
 
-    public async Task<Group> Create(GroupCreateRequest request)
+    public async Task<Group> Create(GroupCreateRequest request, int activeUserId)
     {
-        var activeUserId = _userService.GetActiveUserId();
         var newGroupId = await _groupRepository.Create(request, activeUserId);
         var newGroup = new Group(request.Name, activeUserId, newGroupId);
 
         return newGroup;
     }
 
-    public async Task Delete(int groupId)
+    public async Task Delete(int groupId, int activeUserId)
     {
-        await CheckOwnership(groupId);
+        var isOwner = await IsGroupOwner(groupId, activeUserId);
+        if (!isOwner)
+            throw new NotOwnerException();
+
         await _groupRepository.Delete(groupId);
     }
 
-    public async Task<IEnumerable<Group>> GetAllByUser(int userId)
+    public async Task<IEnumerable<Group>> GetAllByUser(int activeUserId)
     {
-        return await _groupRepository.GetAllByUser(userId);
+        return await _groupRepository.GetAllByUser(activeUserId);
     }
 
-    public async Task<Group?> GetById(int groupId)
+    public async Task<Group?> GetById(int groupId, int activeUserId)
     {
-        await CheckMembership(groupId);
+        var isMember = await IsGroupMember(groupId, activeUserId);
+        if (!isMember)
+            throw new NotMemberException();
         return await _groupRepository.GetById(groupId);
     }
 
-    public async Task<IEnumerable<User>> GetGroupMembers(int groupId)
+    public async Task<IEnumerable<User>> GetGroupMembers(int groupId, int activeUserId)
     {
-        await CheckMembership(groupId);
+        var isMember = await IsGroupMember(groupId, activeUserId);
+        if(!isMember)
+            throw new NotMemberException();
+
         return await _groupRepository.GetGroupMembers(groupId);
     }
 
-    public async Task Update(GroupUpdateRequest request, int groupId)
+    public async Task Update(GroupUpdateRequest request, int groupId, int activeUserId)
     {
-        await CheckOwnership(groupId);
+        var isOwner = await IsGroupOwner(groupId, activeUserId);
+        if (!isOwner)
+            throw new NotOwnerException();
         await _groupRepository.Update(request, groupId);
     }
 
-    public async Task CheckOwnership(int groupId)
+    public async Task<bool> IsGroupOwner(int groupId, int userId)
     {
-        var activeUserId = _userService.GetActiveUserId();
         var group = await _groupRepository.GetById(groupId);
-        var isOwner = group?.OwnerId == activeUserId; 
-        if(!isOwner)
-            throw new UnauthorizedAccessException("You must be the group owner in order to do this.");
+        if (group is null)
+            throw new GroupNotFoundException();
+
+        return group.OwnerId == userId;
     }
 
-    public async Task CheckMembership(int groupId)
+    public async Task<bool> IsGroupMember(int groupId, int userId)
     {
-        var activeUserId = _userService.GetActiveUserId();
-        var group = await _groupRepository.GetGroupMembers(groupId);
-        var isMember = false;
-        foreach (var member in group)
-            isMember = member.UserId == activeUserId;
-
-        if(!isMember)
-            throw new UnauthorizedAccessException("You must be a group member in order to do this.");
+        var groupMembers = await _groupRepository.GetGroupMembers(groupId);
+        var isMember = groupMembers.Any(x => x.UserId == userId);
+        return isMember;
     }
 }

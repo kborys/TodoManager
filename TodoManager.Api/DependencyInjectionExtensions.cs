@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using TodoManager.Api.Helpers;
 
 namespace TodoManager.Api;
 
@@ -75,5 +76,6 @@ public static class DependencyInjectionExtensions
             });
 
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddScoped<IAuthHelper, AuthHelper>();
     }
 }

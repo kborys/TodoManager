@@ -5,13 +5,13 @@ namespace TodoManager.Common.Contracts.Services;
 
 public interface IGroupService
 {
-    Task<Group> Create(GroupCreateRequest request);
-    Task<IEnumerable<Group>> GetAllByUser(int userId);
-    Task<Group?> GetById(int groupId);
-    Task AssignUser(int userId, int groupId);
-    Task Delete(int groupId);
-    Task Update(GroupUpdateRequest request, int groupId);
-    Task<IEnumerable<User>> GetGroupMembers(int groupId);
-    Task CheckOwnership(int groupId);
-    Task CheckMembership(int groupId);
+    Task<Group> Create(GroupCreateRequest request, int activeUserId);
+    Task<IEnumerable<Group>> GetAllByUser(int activeUserId);
+    Task<Group?> GetById(int groupId, int activeUserId);
+    Task AssignUser(int userId, int groupId, int activeUserId);
+    Task Delete(int groupId, int activeUserId);
+    Task Update(GroupUpdateRequest request, int groupId, int activeUserId);
+    Task<IEnumerable<User>> GetGroupMembers(int groupId, int activeUserId);
+    Task<bool> IsGroupOwner(int groupId, int userId);
+    Task<bool> IsGroupMember(int groupId, int userId);
 }
