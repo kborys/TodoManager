@@ -8,7 +8,8 @@ public interface IGroupRepository
     Task<int> Create(GroupCreateRequest request, int requestedBy);
     Task<IEnumerable<Group>> GetAllByUser(int userId);
     Task<Group?> GetById(int groupId);
-    Task AssignUser (int userId, int groupId);
+    Task AddMember (int userId, int groupId);
+    Task RemoveMember (int userId, int groupId);
     Task Delete(int groupId);
     Task Update(GroupUpdateRequest request, int groupId);
     Task<IEnumerable<User>> GetGroupMembers(int groupId);

@@ -19,9 +19,18 @@ public class GroupRepository : IGroupRepository
 
     private IDbConnection Connection => new SqlConnection(_connString);
 
-    public async Task AssignUser(int userId, int groupId)
+    public async Task AddMember(int userId, int groupId)
     {
         const string sql = "INSERT INTO [UserGroupRelation] (UserId, GroupId) VALUES ( @UserId, @GroupId );";
+
+        using var connection = Connection;
+
+        await Connection.ExecuteAsync(sql, new { UserId = userId, GroupId = groupId });
+    }
+
+    public async Task RemoveMember(int userId, int groupId)
+    {
+        const string sql = "DELETE FROM [UserGroupRelation] WHERE UserId = @UserId AND GroupId = @GroupId";
 
         using var connection = Connection;
 

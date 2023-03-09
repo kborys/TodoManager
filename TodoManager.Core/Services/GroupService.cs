@@ -15,13 +15,30 @@ public class GroupService : IGroupService
         _groupRepository = groupRepository;
     }
 
-    public async Task AssignUser(int userId, int groupId, int activeUserId)
+    public async Task AddMember(int userId, int groupId, int activeUserId)
     {
-        var isMember = await IsGroupMember(groupId, activeUserId);
-        if (!isMember)
+        var requesteeIsMember = await IsGroupMember(groupId, activeUserId);
+        if (!requesteeIsMember)
+            throw new NotMemberException();
+        
+        var subjectIsMember = await IsGroupMember(groupId, userId);
+        if (subjectIsMember)
+            throw new AlreadyExistsException("Invited user is already a member");
+
+        await _groupRepository.AddMember(userId, groupId);
+    }
+
+    public async Task RemoveMember(int userId, int groupId, int activeUserId)
+    {
+        var requesteeIsMember = await IsGroupMember(groupId, activeUserId);
+        if (!requesteeIsMember)
             throw new NotMemberException();
 
-        await _groupRepository.AssignUser(userId, groupId);
+        var subjectIsOwner = await IsGroupOwner(groupId, userId);
+        if (subjectIsOwner)
+            throw new UnauthorizedAccessException("You can't kick out the group owner.");
+
+        await _groupRepository.RemoveMember(userId, groupId);
     }
 
     public async Task<Group> Create(GroupCreateRequest request, int activeUserId)

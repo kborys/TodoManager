@@ -3,6 +3,7 @@ using TodoManager.Api.Helpers;
 using TodoManager.Common.Contracts.Services;
 using TodoManager.Common.Models.Groups;
 using TodoManager.Common.Models.Todos;
+using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Api.Controllers;
 
@@ -60,14 +61,34 @@ public class GroupsController : ControllerBase
     }
 
     [HttpPost("{groupId:int}/Members")]
-    public async Task<ActionResult> AddUser(int groupId, AddGroupMemberRequest request)
+    public async Task<ActionResult> AddMember(int groupId, AddGroupMemberRequest request)
     {
         var user = await _userService.GetByUserName(request.UserName);
         if(user is null)
-            return NotFound("User with such UserName doesn't exist in the database.");
+            return NotFound(new { message = "User with such UserName doesn't exist in the database." });
 
         var activeUserId = _authHelper.GetActiveUserId();
-        await _groupService.AssignUser(user.UserId, groupId, activeUserId);
-        return Ok("User successfully added to group.");
+        await _groupService.AddMember(user.UserId, groupId, activeUserId);
+        return Ok(new { message = "User successfully added to the group." });
+    }
+
+    [HttpDelete("{groupId:int}/Members/{userId:int}")]
+    public async Task<ActionResult> RemoveMember(int groupId, int userId)
+    {
+        var user = await _userService.GetById(userId);
+        if (user is null)
+            return NotFound(new { message = "User with such UserId doesn't exist in the database." });
+
+        var activeUserId = _authHelper.GetActiveUserId();
+        await _groupService.RemoveMember(user.UserId, groupId, activeUserId);
+        return Ok(new { message = "User successfully kicked out of the group." });
+    }
+
+    [HttpGet("{groupId:int}/Members")]
+    public async Task<ActionResult<IEnumerable<User>>> GetMembers(int groupId)
+    {
+        var activeUserId = _authHelper.GetActiveUserId();
+        var members = await _groupService.GetGroupMembers(groupId, activeUserId);
+        return Ok(members);
     }
 }
