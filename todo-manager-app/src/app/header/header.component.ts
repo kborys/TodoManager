@@ -27,11 +27,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.isAuthenticated = !user ? false : true;
 
       if (this.isAuthenticated) {
-        const groupId: number = +localStorage.getItem('lastGroupId');
+        let groupId: number = +localStorage.getItem('lastGroupId');
         this.groupsService.getGroups();
         this.groupsSub = this.groupsService.groupsChanged.subscribe(
           (groups: Group[]) => {
             this.groups = groups;
+            // if user is not a member of that group, it will redirect to his first group
+            if (!groups.find((group) => group.groupId === groupId)) {
+              groupId = undefined;
+            }
             this.router.navigate([
               '/group',
               groupId ? groupId : this.groups[0].groupId,

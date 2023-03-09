@@ -1,4 +1,58 @@
 <div class="navbar navbar-expand-sm p-2">
   <a class="navbar-brand fw-bold text-dark">{{ group.name }}</a>
+  <div *ngFor="let member of members" ngbDropdown>
+    <div
+      class="rounded-circle me-2 fw-bold custom-btn user-select-none"
+      ngbDropdownToggle
+    >
+      {{ member.firstName[0] }}{{ member.lastName[0] }}
+    </div>
+    <div ngbDropdownMenu [(open)]="isUserDropdownOpen" class="p-2 text-center">
+      <p class="fw-bold m-0">
+        {{ member.userName }}
+      </p>
+      <p class="m-0">{{ member.firstName }} {{ member.lastName }}</p>
+      <div *ngIf="group.ownerId !== member.userId">
+        <hr />
+        <button
+          class="btn btn-danger mb-1 w-100"
+          (click)="removeGroupMember(member)"
+          ngbDropdownToggle
+        >
+          Kick out
+        </button>
+      </div>
+      <div *ngIf="group.ownerId === member.userId">
+        <hr />
+        <p>Group owner</p>
+      </div>
+    </div>
+  </div>
+
+  <div ngbDropdown>
+    <button class="rounded-circle custom-btn custom-add" ngbDropdownToggle>
+      <div></div>
+      <div></div>
+    </button>
+    <div ngbDropdownMenu class="p-2 text-center">
+      <input
+        type="text"
+        class="form-control"
+        id="userName"
+        required
+        name="userName"
+        placeholder="Username"
+        #userName
+        autocomplete="off"
+      />
+      <button
+        class="btn btn-success mt-2 mb-1 w-100"
+        (click)="addGroupMember(userName)"
+        ngbDropdownToggle
+      >
+        Invite
+      </button>
+    </div>
+  </div>
 </div>
 <app-todos-list></app-todos-list>

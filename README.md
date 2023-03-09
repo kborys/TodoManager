@@ -1,10 +1,7 @@
 # TodoManager
 
-Plan, organize and do what you have to do.
-
-## Purpose of the project
-
-Practice C# and SQL, learn the fundamentals of software development, .NET, Angular and related technologies.
+An Angular Kanban-style todo-list management application that utilizates .NET WebApi.
+Purpose of the project is purely educational.
 
 ## Implemented API features
 
@@ -16,7 +13,7 @@ Practice C# and SQL, learn the fundamentals of software development, .NET, Angul
 
 ###### - Group CRUD operations
 
-###### - Assign a user as a group member
+###### - Add/Remove a group member
 
 #### 4. Todo operations
 
@@ -38,6 +35,8 @@ Practice C# and SQL, learn the fundamentals of software development, .NET, Angul
 
 ###### - View your groups
 
+###### - View group members and add/remove them
+
 #### 3. Todos
 
 ###### - View todos by group and todo status
@@ -46,22 +45,17 @@ Practice C# and SQL, learn the fundamentals of software development, .NET, Angul
 
 ###### - Change status with drag-and-drop
 
-## What is the goal?
-
-Create an Angular Kanban-style todo-list management applicaiton that utilizates my .NET WebApi.
-
 ## Technologies used:
 
 - Angular, Angular Material CDK, RxJS
 - Bootstrap, ngBootstrap
 - .NET 6.0 WebAPI documented with SWAGGER
-- JWT
-- Dapper
+- JWT auth
+- Dapper for db communication
 - MSSQL
 
 ## How to run
 
 1. Publish the TodoManager.SqlDb
 2. Fill in TodoManager.Api user secrets with your db connection string according to appsettings.json
-
-- Authentication infos are temporarly stored in appsettings.Development.json and don't need to be changed.
+3. Use the npm install in Angular project

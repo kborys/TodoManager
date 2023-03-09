@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, tap } from 'rxjs';
-import { User } from '../shared/models/user.model';
+import { AuthUser } from '../shared/models/auth-user.model';
 import { Buffer } from 'buffer';
 import { UserCreate } from '../shared/models/user-create.model';
 
@@ -19,7 +19,7 @@ interface AuthResponseData {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  user = new BehaviorSubject<User>(null);
+  user = new BehaviorSubject<AuthUser>(null);
   private tokenExpirationTimer: any;
   baseUrl = 'https://localhost:7110/api/users/';
   headers = new HttpHeaders({
@@ -33,7 +33,7 @@ export class AuthService {
   signup(user: UserCreate) {
     const url = this.baseUrl + 'register';
 
-    return this.http.post<User>(
+    return this.http.post<AuthUser>(
       url,
       {
         userName: user.userName,
@@ -67,7 +67,7 @@ export class AuthService {
 
   private handleAuthentication(authResponse: AuthResponseData) {
     const expirationDate = this.getTokenExpirationDate(authResponse.token);
-    const user = new User(
+    const user = new AuthUser(
       authResponse.user.userId,
       authResponse.user.userName,
       authResponse.user.firstName,
@@ -112,7 +112,7 @@ export class AuthService {
     } = JSON.parse(localStorage.getItem('user'));
     if (!userData) return;
 
-    const user = new User(
+    const user = new AuthUser(
       +userData.userId,
       userData.userName,
       userData.firstName,

@@ -4,7 +4,7 @@
   height: 1em;
 }
 
-.customAddTaskButton {
+.custom-add-task-btn {
   padding: 0;
   margin: 0;
   border: none;
@@ -12,7 +12,7 @@
   color: rgb(0, 192, 0);
 }
 
-.customAddTaskButton:hover {
+.custom-add-task-btn:hover {
   background-color: lightgray;
   border-radius: 50% !important;
   color: green;
