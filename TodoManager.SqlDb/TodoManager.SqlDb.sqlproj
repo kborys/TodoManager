@@ -60,6 +60,7 @@
     <Folder Include="dbo\Tables" />
     <Folder Include="Scripts" />
     <Folder Include="Scripts\PostDeploymentScripts" />
+    <Folder Include="PublishProfiles" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\User.sql" />
@@ -74,12 +75,9 @@
     <None Include="Scripts\PostDeploymentScripts\Script.PostDeployGroup.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TodoManager.SqlDb.publish.xml" />
+    <None Include="PublishProfiles\TodoManager.SqlDb.Development.publish.xml" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeploymentScripts\Script.PostDeployment.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="TodoManager.SqlDb.refactorlog" />
   </ItemGroup>
 </Project>
