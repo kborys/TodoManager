@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Api", "TodoManager.Api\TodoManager.Api.csproj", "{A3F72007-7CB2-4242-B64B-BF2631A617F6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Infrastructure", "TodoManager.Infrastructure\TodoManager.Infrastructure.csproj", "{83E49ECD-F0BC-46BF-B5B4-6941C7F16CE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Infrastructure.Dapper", "TodoManager.Infrastructure.Dapper\TodoManager.Infrastructure.Dapper.csproj", "{83E49ECD-F0BC-46BF-B5B4-6941C7F16CE5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TodoManager.Core", "TodoManager.Core\TodoManager.Core.csproj", "{26F531C4-4A27-4050-B5B6-D1E2AF176356}"
 EndProject

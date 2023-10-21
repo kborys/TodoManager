@@ -1,7 +1,7 @@
 using TodoManager.Api;
 using TodoManager.Api.Helpers;
 using TodoManager.Core;
-using TodoManager.Infrastructure;
+using TodoManager.Infrastructure.Dapper;
 
 var builder = WebApplication.CreateBuilder(args);
 

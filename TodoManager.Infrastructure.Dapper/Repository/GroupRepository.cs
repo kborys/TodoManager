@@ -6,7 +6,7 @@ using TodoManager.Common.Models.Groups;
 using Dapper;
 using TodoManager.Common.Models.Users;
 
-namespace TodoManager.Infrastructure.Data;
+namespace TodoManager.Infrastructure.Dapper.Repository;
 
 public class GroupRepository : IGroupRepository
 {

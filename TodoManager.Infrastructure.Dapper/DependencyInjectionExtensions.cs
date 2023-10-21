@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Infrastructure.Data;
+using TodoManager.Infrastructure.Dapper.Repository;
 
-namespace TodoManager.Infrastructure;
+namespace TodoManager.Infrastructure.Dapper;
 
 public static class DependencyInjectionExtensions
 {

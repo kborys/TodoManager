@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TodoManager.Core\TodoManager.Core.csproj" />
-    <ProjectReference Include="..\TodoManager.Infrastructure\TodoManager.Infrastructure.csproj" />
+    <ProjectReference Include="..\TodoManager.Infrastructure.Dapper\TodoManager.Infrastructure.Dapper.csproj" />
   </ItemGroup>
 
 </Project>

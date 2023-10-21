@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using TodoManager.Common.Contracts.Repositories;
 using TodoManager.Common.Models.Users;
 
-namespace TodoManager.Infrastructure.Data;
+namespace TodoManager.Infrastructure.Dapper.Repository;
 
 public class UserRepository : IUserRepository
 {
