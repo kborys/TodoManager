@@ -8,15 +8,18 @@ namespace TodoManager.Api;
 
 public static class DependencyInjectionExtensions
 {
-    public static void AddStandardServices(this WebApplicationBuilder builder)
+    public static IServiceCollection AddStandardServices(this IServiceCollection services)
     {
-        builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer();
-        builder.AddSwaggerServices();
-        builder.Services.AddCors();
+        services
+            .AddEndpointsApiExplorer()
+            .AddSwagger()
+            .AddCors()
+            .AddControllers();
+
+        return services;
     }
 
-    private static void AddSwaggerServices(this WebApplicationBuilder builder)
+    private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         var securityScheme = new OpenApiSecurityScheme()
         {
@@ -43,14 +46,16 @@ public static class DependencyInjectionExtensions
             }
         };
 
-        builder.Services.AddSwaggerGen(opts =>
+        services.AddSwaggerGen(opts =>
         {
             opts.AddSecurityDefinition("bearerAuth", securityScheme);
             opts.AddSecurityRequirement(securityRequirement);
         });
+
+        return services;
     }
 
-    public static void AddAuthServices(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddAuthServices(this WebApplicationBuilder builder)
     {
         builder.Services.AddAuthorization(opts =>
         {
@@ -77,5 +82,7 @@ public static class DependencyInjectionExtensions
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+
+        return builder;
     }
 }

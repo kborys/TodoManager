@@ -5,23 +5,27 @@ using TodoManager.Infrastructure.Dapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddStandardServices();
-builder.Services.AddCoreModules();
-builder.Services.AddInfrastructure();
+builder
+    .AddAuthServices();
 
-builder.AddAuthServices();
+builder.Services
+    .AddStandardServices()
+    .AddCoreModules()
+    .AddInfrastructure();
+
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger()
+        .UseSwaggerUI();
 }
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
-app.UseHttpsRedirection();
+app
+    .UseDefaultFiles()
+    .UseStaticFiles()
+    .UseHttpsRedirection();
 
 app.UseCors(opts =>
 {
@@ -30,11 +34,10 @@ app.UseCors(opts =>
         .AllowAnyMethod();
 });
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseMiddleware<ErrorHandlerMiddleware>();
+app
+    .UseAuthentication()
+    .UseAuthorization()
+    .UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapControllers();
-
 app.Run();

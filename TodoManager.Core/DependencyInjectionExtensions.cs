@@ -8,12 +8,12 @@ namespace TodoManager.Core;
 
 public static class DependencyInjectionExtensions
 {
-    public static void AddCoreModules(this IServiceCollection services)
+    public static IServiceCollection AddCoreModules(this IServiceCollection services)
     {
-        services.AddTransient<IJwtUtils, JwtUtils>();
-
-        services.AddScoped<IUserService, UserService>();
-        services.AddScoped<ITodoService, TodoService>();
-        services.AddScoped<IGroupService, GroupService>();
+        return services
+            .AddTransient<IJwtGenerator, JwtGenerator>()
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<ITodoService, TodoService>()
+            .AddScoped<IGroupService, GroupService>();
     }
 }

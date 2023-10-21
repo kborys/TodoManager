@@ -2,7 +2,7 @@
 
 namespace TodoManager.Common.Contracts;
 
-public interface IJwtUtils
+public interface IJwtGenerator
 {
     string GenerateToken(User user);
 }

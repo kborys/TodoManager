@@ -8,11 +8,11 @@ using TodoManager.Common.Models.Users;
 
 namespace TodoManager.Core.Helpers;
 
-public class JwtUtils : IJwtUtils
+public class JwtGenerator : IJwtGenerator
 {
     private readonly IConfiguration _config;
 
-    public JwtUtils(IConfiguration config)
+    public JwtGenerator(IConfiguration config)
     {
         _config = config;
     }

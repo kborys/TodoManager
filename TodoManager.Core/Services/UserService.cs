@@ -10,9 +10,9 @@ namespace TodoManager.Core.Services;
 public class UserService : IUserService
 {
 	private readonly IUserRepository _userRepository;
-    private readonly IJwtUtils _jwtUtils;
+    private readonly IJwtGenerator _jwtUtils;
 
-    public UserService(IUserRepository userRepository, IJwtUtils jwtUtils)
+    public UserService(IUserRepository userRepository, IJwtGenerator jwtUtils)
 	{
 		_userRepository = userRepository;
         _jwtUtils = jwtUtils;
