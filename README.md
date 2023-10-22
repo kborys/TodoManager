@@ -49,7 +49,7 @@ Purpose of the project is purely educational.
 
 - Angular, Angular Material CDK, RxJS
 - Bootstrap, ngBootstrap
-- .NET 6.0 WebAPI documented with SWAGGER
+- .NET 7 WebAPI documented with SWAGGER
 - JWT auth
 - Dapper for db communication
 - MSSQL
