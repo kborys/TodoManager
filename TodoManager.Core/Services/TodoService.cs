@@ -18,48 +18,45 @@ public class TodoService : ITodoService
     }
 
 
-    public async Task<Todo> Create(TodoCreateRequest request, int activeUserId)
+    public async Task<Todo> Create(TodoCreateRequest createTodoRequest, int requesteeId)
     {
-        var isMember = await _groupService.IsGroupMember(request.GroupId, activeUserId);
+        var isMember = await _groupService.IsGroupMember(createTodoRequest.GroupId, requesteeId);
         if (!isMember)
             throw new NotMemberException();
 
-        var newTodoId = await _todoRepository.Create(request);
-        var newTodo = new Todo(newTodoId, request.Title, request.GroupId, request.OwnerId, request.Status,
-            request.Description);
+        var createdTodoId = await _todoRepository.Create(createTodoRequest);
+        var createdTodo = new Todo(createdTodoId, createTodoRequest.Title, createTodoRequest.GroupId, createTodoRequest.OwnerId, createTodoRequest.Status, createTodoRequest.Description);
 
-        return newTodo;
+        return createdTodo;
     }
 
-    public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId, int activeUserId)
+    public async Task<IEnumerable<Todo>> GetAllByGroup(int groupId, int requesteeId)
     {
-        var isMember = await _groupService.IsGroupMember(groupId, activeUserId);
+        var isMember = await _groupService.IsGroupMember(groupId, requesteeId);
         if (!isMember)
             throw new NotMemberException();
 
         return await _todoRepository.GetAllByGroup(groupId);
     }
 
-    public async Task<Todo?> GetById(int todoId, int activeUserId)
+    public async Task<Todo?> GetById(int todoId, int requesteeId)
     {
         var todo = await _todoRepository.GetById(todoId);
-        if (todo is not null)
-        {
-            var isMember = await _groupService.IsGroupMember(todo.GroupId, activeUserId);
-            if (!isMember)
-                throw new NotMemberException();
-        }
+        if (todo is null)
+            return null;
+        
+        var isMember = await _groupService.IsGroupMember(todo.GroupId, requesteeId);
+        if (!isMember)
+            throw new NotMemberException();
 
         return todo;
     }
 
-    public async Task UpdateStatus(int todoId, Status status, int activeUserId)
+    public async Task UpdateStatus(int todoId, Status status, int requesteeId)
     {
-        var todo = await _todoRepository.GetById(todoId);
-        if (todo is null)
-            throw new NotFoundException("Todo with given id does not exist");
-
-        var isMember = await _groupService.IsGroupMember(todo.GroupId, activeUserId);
+        var todo = await _todoRepository.GetById(todoId)
+            ?? throw new NotFoundException("Todo with given id does not exist");
+        var isMember = await _groupService.IsGroupMember(todo.GroupId, requesteeId);
         if (!isMember)
             throw new NotMemberException();
 

@@ -10,7 +10,7 @@ public class User
     public string LastName { get; set; }
 
     [JsonIgnore]
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
     public string EmailAddress { get; set; }
 
     private User() //dapper purpose
@@ -18,13 +18,13 @@ public class User
 
     }
 
-    public User(string userName, string firstName, string lastName, string password, string emailAddress, int userId = 0)
+    public User(string userName, string firstName, string lastName, string passwordHash, string emailAddress, int userId = 0)
     {
         UserId = userId;
         UserName = userName;
         FirstName = firstName;
         LastName = lastName;
-        Password = password;
+        PasswordHash = passwordHash;
         EmailAddress = emailAddress;
     }
 }

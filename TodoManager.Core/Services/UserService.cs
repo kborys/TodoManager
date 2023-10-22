@@ -10,12 +10,12 @@ namespace TodoManager.Core.Services;
 public class UserService : IUserService
 {
 	private readonly IUserRepository _userRepository;
-    private readonly IJwtGenerator _jwtUtils;
+    private readonly IJwtGenerator _jwtGenerator;
 
-    public UserService(IUserRepository userRepository, IJwtGenerator jwtUtils)
+    public UserService(IUserRepository userRepository, IJwtGenerator jwtGenerator)
 	{
 		_userRepository = userRepository;
-        _jwtUtils = jwtUtils;
+        _jwtGenerator = jwtGenerator;
     }
 
 	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request)
@@ -24,11 +24,11 @@ public class UserService : IUserService
         if(user is null)
             return null;
 
-		bool passwordMatches = SecretHasher.Verify(request.Password, user.Password);
+		bool passwordMatches = SecretHasher.Verify(request.Password, user.PasswordHash);
 		if (!passwordMatches)
             return null;
 
-        var token = _jwtUtils.GenerateToken(user);
+        var token = _jwtGenerator.GenerateToken(user);
         var response = new AuthenticateResponse(user, token);
         return response;
 	}
@@ -39,10 +39,10 @@ public class UserService : IUserService
         if (matchingUsersCount > 0)
             throw new AlreadyExistsException($"Username or email address already in use.");
         
-        request.UserName = request.UserName.Trim();
-        request.Password = SecretHasher.Hash(request.Password);
+        var userName = request.UserName.Trim();
+        var password = SecretHasher.Hash(request.Password);
 
-        var newUser = new User(request.UserName, request.FirstName, request.LastName, request.Password, request.EmailAddress); 
+        var newUser = new User(userName, request.FirstName, request.LastName, password, request.EmailAddress); 
         newUser.UserId = await _userRepository.Create(request);
 
         return newUser;
@@ -62,30 +62,29 @@ public class UserService : IUserService
         return user;
     }
     
-    public async Task Update(int id, UserUpdateRequest request, int activeUserId)
+    public async Task Update(int subjectId, UserUpdateRequest request, int requesteeId)
 	{
-        if (id != activeUserId)
-            throw new UnauthorizedAccessException("Invalid user update.");
+        if (subjectId != requesteeId)
+            throw new UnauthorizedAccessException("You can only update your own user account.");
 
-        var user = await _userRepository.GetById(id);
-        if(user is null)
-            throw new NotFoundException($"User with given id '{id}' doesn't exist in the database. Please try again.");
-
-        if(!string.IsNullOrEmpty(request.FirstName))
+        var user = await _userRepository.GetById(subjectId) 
+            ?? throw new NotFoundException($"User doesn't exist in the database. Please try again.");
+        
+        if (!string.IsNullOrEmpty(request.FirstName))
             user.FirstName = request.FirstName;
         if(!string.IsNullOrEmpty(request.LastName))
             user.LastName = request.LastName;
         if(!string.IsNullOrEmpty(request.Password))
-            user.Password = SecretHasher.Hash(request.Password);
+            user.PasswordHash = SecretHasher.Hash(request.Password);
 
 		await _userRepository.Update(user);
 	}
 
-    public async Task Delete(int id, int activeUserId)
+    public async Task Delete(int subjectId, int requesteeId)
     {
-        if (id != activeUserId)
-            throw new UnauthorizedAccessException("Invalid user delete.");
+        if (subjectId != requesteeId)
+            throw new UnauthorizedAccessException("You can only delete your own user account.");
 
-        await _userRepository.Delete(id);
+        await _userRepository.Delete(subjectId);
     }
 }

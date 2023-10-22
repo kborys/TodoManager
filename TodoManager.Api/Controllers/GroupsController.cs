@@ -48,7 +48,7 @@ public class GroupsController : ControllerBase
         var activeUserId = _authHelper.GetActiveUserId();
         var group = await _groupService.GetById(groupId, activeUserId);
 
-        return Ok(group);
+        return group is null ? NotFound() : Ok(group);
     }
 
     [HttpGet("{groupId:int}/Todos")]

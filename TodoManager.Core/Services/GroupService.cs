@@ -15,86 +15,82 @@ public class GroupService : IGroupService
         _groupRepository = groupRepository;
     }
 
-    public async Task AddMember(int userId, int groupId, int activeUserId)
+    public async Task AddMember(int subjectId, int groupId, int requesteeId)
     {
-        var requesteeIsMember = await IsGroupMember(groupId, activeUserId);
-        if (!requesteeIsMember)
+        var requesteeIsGroupMember = await IsGroupMember(groupId, requesteeId);
+        if (!requesteeIsGroupMember)
             throw new NotMemberException();
         
-        var subjectIsMember = await IsGroupMember(groupId, userId);
-        if (subjectIsMember)
-            throw new AlreadyExistsException("Invited user is already a member");
+        var subjectUserIsAlreadyGroupMember = await IsGroupMember(groupId, subjectId);
+        if (subjectUserIsAlreadyGroupMember)
+            return;
 
-        await _groupRepository.AddMember(userId, groupId);
+        await _groupRepository.AddMember(subjectId, groupId);
     }
 
-    public async Task RemoveMember(int userId, int groupId, int activeUserId)
+    public async Task RemoveMember(int subjectId, int groupId, int requesteeId)
     {
-        var requesteeIsMember = await IsGroupMember(groupId, activeUserId);
-        if (!requesteeIsMember)
+        var requesteeIsGroupMember = await IsGroupMember(groupId, requesteeId);
+        if (!requesteeIsGroupMember)
             throw new NotMemberException();
 
-        var subjectIsOwner = await IsGroupOwner(groupId, userId);
-        if (subjectIsOwner)
+        var group = await _groupRepository.GetById(groupId);
+        if (group?.OwnerId != requesteeId)
             throw new UnauthorizedAccessException("You can't kick out the group owner.");
 
-        await _groupRepository.RemoveMember(userId, groupId);
+
+        await _groupRepository.RemoveMember(subjectId, groupId);
     }
 
-    public async Task<Group> Create(GroupCreateRequest request, int activeUserId)
+    public async Task<Group> Create(GroupCreateRequest createGroupRequest, int requesteeId)
     {
-        var newGroupId = await _groupRepository.Create(request, activeUserId);
-        var newGroup = new Group(request.Name, activeUserId, newGroupId);
+        var newGroupId = await _groupRepository.Create(createGroupRequest, requesteeId);
+        var newGroup = new Group(createGroupRequest.Name, requesteeId, newGroupId);
 
         return newGroup;
     }
 
-    public async Task Delete(int groupId, int activeUserId)
+    public async Task Delete(int groupId, int requesteeId)
     {
-        var isOwner = await IsGroupOwner(groupId, activeUserId);
-        if (!isOwner)
+        var group = await _groupRepository.GetById(groupId);
+        if (group is null) return;
+        if (group?.OwnerId != requesteeId)
             throw new NotOwnerException();
 
         await _groupRepository.Delete(groupId);
     }
 
-    public async Task<IEnumerable<Group>> GetAllByUser(int activeUserId)
+    public async Task<IEnumerable<Group>> GetAllByUser(int requesteeId)
     {
-        return await _groupRepository.GetAllByUser(activeUserId);
+        return await _groupRepository.GetAllByUser(requesteeId);
     }
 
-    public async Task<Group?> GetById(int groupId, int activeUserId)
+    public async Task<Group?> GetById(int groupId, int requesteeId)
     {
-        var isMember = await IsGroupMember(groupId, activeUserId);
-        if (!isMember)
+        var requesteeIsGroupMember = await IsGroupMember(groupId, requesteeId);
+        if (!requesteeIsGroupMember)
             throw new NotMemberException();
+
         return await _groupRepository.GetById(groupId);
     }
 
-    public async Task<IEnumerable<User>> GetGroupMembers(int groupId, int activeUserId)
+    public async Task<IEnumerable<User>> GetGroupMembers(int groupId, int requesteeId)
     {
-        var isMember = await IsGroupMember(groupId, activeUserId);
-        if(!isMember)
+        var groupMembers = await _groupRepository.GetGroupMembers(groupId);
+        if (!groupMembers.Any(u => u.UserId == requesteeId))
             throw new NotMemberException();
 
-        return await _groupRepository.GetGroupMembers(groupId);
+        return groupMembers;
     }
 
-    public async Task Update(GroupUpdateRequest request, int groupId, int activeUserId)
-    {
-        var isOwner = await IsGroupOwner(groupId, activeUserId);
-        if (!isOwner)
-            throw new NotOwnerException();
-        await _groupRepository.Update(request, groupId);
-    }
-
-    public async Task<bool> IsGroupOwner(int groupId, int userId)
+    public async Task Update(GroupUpdateRequest request, int groupId, int requesteeId)
     {
         var group = await _groupRepository.GetById(groupId);
-        if (group is null)
-            throw new GroupNotFoundException();
-
-        return group.OwnerId == userId;
+        if (group is null) return;
+        if (group.OwnerId != requesteeId)
+            throw new NotOwnerException();
+        
+        await _groupRepository.Update(request, groupId);
     }
 
     public async Task<bool> IsGroupMember(int groupId, int userId)

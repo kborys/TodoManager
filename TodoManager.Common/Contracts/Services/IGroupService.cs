@@ -14,6 +14,5 @@ public interface IGroupService
     Task Delete(int groupId, int activeUserId);
     Task Update(GroupUpdateRequest request, int groupId, int activeUserId);
     Task<IEnumerable<User>> GetGroupMembers(int groupId, int activeUserId);
-    Task<bool> IsGroupOwner(int groupId, int userId);
     Task<bool> IsGroupMember(int groupId, int userId);
 }
