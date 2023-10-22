@@ -3,7 +3,7 @@
 public class Group
 {
     public int GroupId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     public int OwnerId { get; set; }
 
     private Group() //dapper purpose

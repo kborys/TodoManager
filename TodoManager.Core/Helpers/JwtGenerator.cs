@@ -20,7 +20,7 @@ public class JwtGenerator : IJwtGenerator
     public string GenerateToken(User user)
     {
         var secretKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(
-            _config["Authentication:SecretKey"]));
+            _config["Authentication:SecretKey"]!));
 
         var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
@@ -30,7 +30,7 @@ public class JwtGenerator : IJwtGenerator
             new(JwtRegisteredClaimNames.UniqueName, user.UserName)
         };
 
-        var expiresInMinutes = int.Parse(_config["Authentication:ExpiresInMinutes"]);
+        var expiresInMinutes = int.Parse(_config["Authentication:ExpiresInMinutes"]!);
         var expirationDate = DateTime.UtcNow.AddMinutes(expiresInMinutes);
         var token = new JwtSecurityToken(
                 _config["Authentication:Issuer"],

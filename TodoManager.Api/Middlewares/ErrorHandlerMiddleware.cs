@@ -1,4 +1,4 @@
-﻿using TodoManager.Common.ErrorModel;
+﻿using TodoManager.Common.Models;
 using TodoManager.Common.Exceptions;
 
 namespace TodoManager.Api.Helpers;

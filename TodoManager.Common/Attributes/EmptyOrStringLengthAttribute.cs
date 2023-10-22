@@ -11,9 +11,9 @@ public class EmptyOrStringLengthAttribute : ValidationAttribute
     {
     }
 
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
-        string strValue = value as string;
+        string? strValue = value as string;
         if(!string.IsNullOrEmpty(strValue))
         {
             int length = strValue.Length;

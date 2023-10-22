@@ -13,7 +13,8 @@ public class TodoRepository : ITodoRepository
 
     public TodoRepository(IConfiguration config)
     {
-        _connString = config.GetConnectionString("Default");
+        _connString = config.GetConnectionString("Default")
+            ?? throw new ArgumentNullException(nameof(config));
     }
 
     private IDbConnection Connection => new SqlConnection(_connString);

@@ -76,7 +76,7 @@ public static class DependencyInjectionExtensions
                     ValidAudience = builder.Configuration.GetValue<string>("Authentication:Audience"),
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.ASCII.GetBytes(
-                            builder.Configuration.GetValue<string>("Authentication:SecretKey")))
+                            builder.Configuration.GetValue<string>("Authentication:SecretKey")!))
                 };
             });
 
