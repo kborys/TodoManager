@@ -1,4 +1,4 @@
-﻿namespace TodoManager.Common.ErrorModel;
+﻿namespace TodoManager.Common.Models;
 
 public class ErrorDetails
 {
