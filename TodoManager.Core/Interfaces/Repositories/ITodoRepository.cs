@@ -1,7 +1,6 @@
-﻿using TodoManager.Common.Models.Enums;
-using TodoManager.Common.Models.Todos;
+﻿using TodoManager.Application.Models.Todos;
 
-namespace TodoManager.Common.Contracts.Repositories;
+namespace TodoManager.Application.Interfaces.Repositories;
 
 public interface ITodoRepository
 {

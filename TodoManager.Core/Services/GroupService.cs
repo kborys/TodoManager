@@ -1,12 +1,12 @@
-﻿using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Common.Exceptions;
-using TodoManager.Common.Models.Groups;
-using TodoManager.Common.Models.Users;
+﻿using TodoManager.Application.Exceptions;
+using TodoManager.Application.Interfaces.Repositories;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Models.Groups;
+using TodoManager.Application.Models.Users;
 
-namespace TodoManager.Core.Services;
+namespace TodoManager.Application.Services;
 
-public class GroupService : IGroupService
+internal class GroupService : IGroupService
 {
     private readonly IGroupRepository _groupRepository;
 
@@ -20,7 +20,7 @@ public class GroupService : IGroupService
         var requesteeIsGroupMember = await IsGroupMember(groupId, requesteeId);
         if (!requesteeIsGroupMember)
             throw new NotMemberException();
-        
+
         var subjectUserIsAlreadyGroupMember = await IsGroupMember(groupId, subjectId);
         if (subjectUserIsAlreadyGroupMember)
             return;
@@ -89,7 +89,7 @@ public class GroupService : IGroupService
         if (group is null) return;
         if (group.OwnerId != requesteeId)
             throw new NotOwnerException();
-        
+
         await _groupRepository.Update(request, groupId);
     }
 

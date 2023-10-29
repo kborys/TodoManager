@@ -1,7 +1,7 @@
-﻿using TodoManager.Common.Models.Groups;
-using TodoManager.Common.Models.Users;
+﻿using TodoManager.Application.Models.Groups;
+using TodoManager.Application.Models.Users;
 
-namespace TodoManager.Common.Contracts.Services;
+namespace TodoManager.Application.Interfaces.Services;
 
 public interface IGroupService
 {

@@ -1,52 +1,54 @@
-﻿using TodoManager.Common.Contracts;
-using TodoManager.Common.Models.Users;
-using TodoManager.Common.Helpers;
-using TodoManager.Common.Exceptions;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Common.Contracts.Repositories;
+﻿using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Interfaces.Authentication;
+using TodoManager.Application.Interfaces.Repositories;
+using TodoManager.Application.Models.Users;
+using TodoManager.Application.Exceptions;
+using TodoManager.Application.Models.Authentication;
 
-namespace TodoManager.Core.Services;
+namespace TodoManager.Application.Services;
 
-public class UserService : IUserService
+internal class UserService : IUserService
 {
-	private readonly IUserRepository _userRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IJwtGenerator _jwtGenerator;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public UserService(IUserRepository userRepository, IJwtGenerator jwtGenerator)
-	{
-		_userRepository = userRepository;
+    public UserService(IUserRepository userRepository, IJwtGenerator jwtGenerator, IPasswordHasher passwordHasher)
+    {
+        _userRepository = userRepository;
         _jwtGenerator = jwtGenerator;
+        _passwordHasher = passwordHasher;
     }
 
-	public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest request)
-	{
-		var user = await _userRepository.GetByUserName(request.UserName);
-        if(user is null)
+    public async Task<AuthenticationResponse?> Authenticate(LoginRequest request)
+    {
+        var user = await _userRepository.GetByUserName(request.UserName);
+        if (user is null)
             return null;
 
-		bool passwordMatches = SecretHasher.Verify(request.Password, user.PasswordHash);
-		if (!passwordMatches)
+        bool passwordMatches = _passwordHasher.Verify(request.Password, user.PasswordHash);
+        if (!passwordMatches)
             return null;
 
         var token = _jwtGenerator.GenerateToken(user);
-        var response = new AuthenticateResponse(user, token);
+        var response = new AuthenticationResponse(user, token);
         return response;
-	}
+    }
 
-	public async Task<User> Create(UserCreateRequest request)
-	{
+    public async Task<User> Create(RegisterRequest request)
+    {
         var matchingUsersCount = await _userRepository.Count(request.UserName, request.EmailAddress);
         if (matchingUsersCount > 0)
             throw new AlreadyExistsException($"Username or email address already in use.");
-        
-        var userName = request.UserName.Trim();
-        var password = SecretHasher.Hash(request.Password);
 
-        var newUser = new User(userName, request.FirstName, request.LastName, password, request.EmailAddress); 
+        var userName = request.UserName.Trim();
+        var password = _passwordHasher.Hash(request.Password);
+
+        var newUser = new User(userName, request.FirstName, request.LastName, password, request.EmailAddress);
         newUser.UserId = await _userRepository.Create(request);
 
         return newUser;
-	}
+    }
 
     public async Task<User?> GetById(int id)
     {
@@ -61,24 +63,24 @@ public class UserService : IUserService
 
         return user;
     }
-    
+
     public async Task Update(int subjectId, UserUpdateRequest request, int requesteeId)
-	{
+    {
         if (subjectId != requesteeId)
             throw new UnauthorizedAccessException("You can only update your own user account.");
 
-        var user = await _userRepository.GetById(subjectId) 
+        var user = await _userRepository.GetById(subjectId)
             ?? throw new NotFoundException($"User doesn't exist in the database. Please try again.");
-        
+
         if (!string.IsNullOrEmpty(request.FirstName))
             user.FirstName = request.FirstName;
-        if(!string.IsNullOrEmpty(request.LastName))
+        if (!string.IsNullOrEmpty(request.LastName))
             user.LastName = request.LastName;
-        if(!string.IsNullOrEmpty(request.Password))
-            user.PasswordHash = SecretHasher.Hash(request.Password);
+        if (!string.IsNullOrEmpty(request.Password))
+            user.PasswordHash = _passwordHasher.Hash(request.Password);
 
-		await _userRepository.Update(user);
-	}
+        await _userRepository.Update(user);
+    }
 
     public async Task Delete(int subjectId, int requesteeId)
     {

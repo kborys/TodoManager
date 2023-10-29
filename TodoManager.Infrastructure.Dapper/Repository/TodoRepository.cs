@@ -2,12 +2,12 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Models.Todos;
+using TodoManager.Application.Interfaces.Repositories;
+using TodoManager.Application.Models.Todos;
 
 namespace TodoManager.Infrastructure.Dapper.Repository;
 
-public class TodoRepository : ITodoRepository
+internal class TodoRepository : ITodoRepository
 {
     private readonly string _connString;
 

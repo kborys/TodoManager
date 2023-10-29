@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using TodoManager.Common.Models.Users;
-using TodoManager.Common.Contracts.Services;
+﻿using Microsoft.AspNetCore.Mvc;
 using TodoManager.Api.Helpers;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Models.Users;
 
 namespace TodoManager.Api.Controllers;
 
@@ -17,27 +16,6 @@ public class UsersController : ControllerBase
     {
         _userService = userService;
         _authHelper = authHelper;
-    }
-
-    [HttpPost("Authenticate")]
-    [AllowAnonymous]
-    public async Task<ActionResult<AuthenticateResponse>> Authenticate(AuthenticateRequest request)
-    {
-        var response = await _userService.Authenticate(request);
-
-        if (response is null)
-            return Unauthorized();
-
-        return Ok(response);
-    }
-
-    [HttpPost("Register")]
-    [AllowAnonymous]
-    public async Task<IActionResult> Register(UserCreateRequest request)
-    {
-        var newUser = await _userService.Create(request);
-
-        return CreatedAtRoute("GetUserById", new { id = newUser.UserId }, newUser);
     }
 
     [HttpGet("{id:int}", Name = "GetUserById")]

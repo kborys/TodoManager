@@ -1,18 +1,16 @@
 using TodoManager.Api;
 using TodoManager.Api.Helpers;
-using TodoManager.Core;
-using TodoManager.Infrastructure.Dapper;
+using TodoManager.Application;
+using TodoManager.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder
-    .AddAuthServices();
 
 builder.Services
     .AddStandardServices()
     .AddCoreModules()
-    .AddInfrastructure();
-
+    .AddInfrastructure(builder.Configuration)
+    .AddAuthServices()
+    .AddSwagger();
 
 var app = builder.Build();
 

@@ -1,12 +1,12 @@
-﻿using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Common.Exceptions;
-using TodoManager.Common.Models.Enums;
-using TodoManager.Common.Models.Todos;
+﻿using TodoManager.Application.Models.Todos;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Models.Enums;
+using TodoManager.Application.Interfaces.Repositories;
+using TodoManager.Application.Exceptions;
 
-namespace TodoManager.Core.Services;
+namespace TodoManager.Application.Services;
 
-public class TodoService : ITodoService
+internal class TodoService : ITodoService
 {
     private readonly ITodoRepository _todoRepository;
     private readonly IGroupService _groupService;
@@ -44,7 +44,7 @@ public class TodoService : ITodoService
         var todo = await _todoRepository.GetById(todoId);
         if (todo is null)
             return null;
-        
+
         var isMember = await _groupService.IsGroupMember(todo.GroupId, requesteeId);
         if (!isMember)
             throw new NotMemberException();

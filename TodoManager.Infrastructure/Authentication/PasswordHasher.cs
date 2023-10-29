@@ -1,25 +1,26 @@
 ﻿using System.Security.Cryptography;
+using TodoManager.Application.Interfaces.Authentication;
 
-namespace TodoManager.Common.Helpers;
+namespace TodoManager.Infrastructure.Authentication;
 
-public static class SecretHasher
+public class PasswordHasher : IPasswordHasher
 {
     private const int _saltSize = 16; // 128 bits
     private const int _keySize = 32; // 256 bits
     private const int _iterations = 10000;
     private static readonly HashAlgorithmName _algorithm = HashAlgorithmName.SHA256;
 
-    private const char segmentDelimiter = ':';
+    private const char _segmentDelimiter = ':';
 
     /// <summary>
     /// Creates a hash from given string in the following format: [key]:[salt]:[iterations]:[algorithm]
     /// </summary>
-    /// <param name="secret">String value to be hashed</param>
-    public static string Hash(string secret)
+    /// <param name="password">String value to be hashed</param>
+    public string Hash(string password)
     {
         var salt = RandomNumberGenerator.GetBytes(_saltSize);
         var key = Rfc2898DeriveBytes.Pbkdf2(
-                secret,
+                password,
                 salt,
                 _iterations,
                 _algorithm,
@@ -27,23 +28,23 @@ public static class SecretHasher
             );
 
         return string.Join(
-            segmentDelimiter,
+            _segmentDelimiter,
             Convert.ToBase64String(key),
             Convert.ToBase64String(salt),
             _iterations,
             _algorithm);
     }
 
-    public static bool Verify(string secret, string hash)
+    public bool Verify(string password, string hash)
     {
-        var segments = hash.Trim().Split(segmentDelimiter);
+        var segments = hash.Trim().Split(_segmentDelimiter);
         var key = Convert.FromBase64String(segments[0]);
         var salt = Convert.FromBase64String(segments[1]);
         var iterations = int.Parse(segments[2]);
         var algorithm = new HashAlgorithmName(segments[3]);
 
         var inputSecretKey = Rfc2898DeriveBytes.Pbkdf2(
-                secret,
+                password,
                 salt,
                 iterations,
                 algorithm,

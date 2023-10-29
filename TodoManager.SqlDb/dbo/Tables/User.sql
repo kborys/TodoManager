@@ -3,6 +3,6 @@
     [UserName]  NVARCHAR (50) NOT NULL UNIQUE,
     [FirstName] NVARCHAR (50) NOT NULL,
     [LastName]  NVARCHAR (50) NOT NULL,
-    [Password]  CHAR (90)     NOT NULL,
+    [PasswordHash]  CHAR (90)     NOT NULL,
     [EmailAddress] NVARCHAR(319) NOT NULL UNIQUE
 );

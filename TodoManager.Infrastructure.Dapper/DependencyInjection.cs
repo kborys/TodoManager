@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TodoManager.Common.Contracts.Repositories;
+using TodoManager.Application.Interfaces.Repositories;
 using TodoManager.Infrastructure.Dapper.Repository;
 
 namespace TodoManager.Infrastructure.Dapper;
 
-public static class DependencyInjectionExtensions
+public static class DependencyInjection
 {
-    public static void AddInfrastructure(this IServiceCollection services)
+    public static void AddDapper(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IGroupRepository, GroupRepository>();

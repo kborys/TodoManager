@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TodoManager.Core\TodoManager.Core.csproj" />
-    <ProjectReference Include="..\TodoManager.Infrastructure.Dapper\TodoManager.Infrastructure.Dapper.csproj" />
+    <ProjectReference Include="..\TodoManager.Core\TodoManager.Application.csproj" />
+    <ProjectReference Include="..\TodoManager.Infrastructure\TodoManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

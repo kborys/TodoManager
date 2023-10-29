@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System.Data.SqlClient;
 using System.Data;
-using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Models.Groups;
 using Dapper;
-using TodoManager.Common.Models.Users;
+using TodoManager.Application.Models.Groups;
+using TodoManager.Application.Models.Users;
+using TodoManager.Application.Interfaces.Repositories;
 
 namespace TodoManager.Infrastructure.Dapper.Repository;
 
-public class GroupRepository : IGroupRepository
+internal class GroupRepository : IGroupRepository
 {
     private readonly string _connString;
 
@@ -87,7 +87,7 @@ public class GroupRepository : IGroupRepository
 
     public async Task<IEnumerable<User>> GetGroupMembers(int groupId)
     {
-        const string sql = "SELECT u.UserId, u.UserName, u.FirstName, u.LastName, u.[Password], u.EmailAddress " +
+        const string sql = "SELECT u.UserId, u.UserName, u.FirstName, u.LastName, u.[PasswordHash], u.EmailAddress " +
             "FROM [UserGroupRelation] AS ug " +
             "INNER JOIN [User] AS u ON ug.UserId = u.UserId " +
             "WHERE ug.GroupId = @GroupId;";

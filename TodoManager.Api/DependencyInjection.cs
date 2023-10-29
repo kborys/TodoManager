@@ -1,25 +1,26 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using TodoManager.Api.Helpers;
+using TodoManager.Infrastructure.Authentication;
 
 namespace TodoManager.Api;
 
-public static class DependencyInjectionExtensions
+public static class DependencyInjection
 {
     public static IServiceCollection AddStandardServices(this IServiceCollection services)
     {
         services
             .AddEndpointsApiExplorer()
-            .AddSwagger()
             .AddCors()
             .AddControllers();
 
         return services;
     }
 
-    private static IServiceCollection AddSwagger(this IServiceCollection services)
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         var securityScheme = new OpenApiSecurityScheme()
         {
@@ -42,7 +43,7 @@ public static class DependencyInjectionExtensions
                         Id = "bearerAuth"
                     }
                 },
-                new string[] {}
+                Array.Empty<string>()
             }
         };
 
@@ -55,16 +56,21 @@ public static class DependencyInjectionExtensions
         return services;
     }
 
-    public static WebApplicationBuilder AddAuthServices(this WebApplicationBuilder builder)
+    public static IServiceCollection AddAuthServices(this IServiceCollection services)
     {
-        builder.Services.AddAuthorization(opts =>
+        services.AddAuthorization(opts =>
         {
             opts.FallbackPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
                 .Build();
         });
 
-        builder.Services.AddAuthentication("Bearer")
+        var jwtSettings = services
+            .BuildServiceProvider()
+            .GetRequiredService<IOptions<JwtSettings>>()
+            .Value;
+
+        services.AddAuthentication("Bearer")
             .AddJwtBearer(opts =>
             {
                 opts.TokenValidationParameters = new()
@@ -72,17 +78,15 @@ public static class DependencyInjectionExtensions
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration.GetValue<string>("Authentication:Issuer"),
-                    ValidAudience = builder.Configuration.GetValue<string>("Authentication:Audience"),
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.ASCII.GetBytes(
-                            builder.Configuration.GetValue<string>("Authentication:SecretKey")!))
+                    ValidIssuer = jwtSettings.Issuer,
+                    ValidAudience = jwtSettings.Audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret))
                 };
             });
 
-        builder.Services.AddHttpContextAccessor();
-        builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+        services.AddHttpContextAccessor();
+        services.AddScoped<IAuthHelper, AuthHelper>();
 
-        return builder;
+        return services;
     }
 }

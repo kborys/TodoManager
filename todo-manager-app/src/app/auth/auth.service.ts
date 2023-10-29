@@ -21,7 +21,7 @@ interface AuthResponseData {
 export class AuthService {
   user = new BehaviorSubject<AuthUser>(null);
   private tokenExpirationTimer: any;
-  baseUrl = 'https://localhost:7110/api/users/';
+  baseUrl = 'https://localhost:7110/api/authentication/';
   headers = new HttpHeaders({
     'Content-Type': 'application/json',
   });
@@ -47,7 +47,7 @@ export class AuthService {
   }
 
   login(userName: string, password: string) {
-    const url = this.baseUrl + 'authenticate';
+    const url = this.baseUrl + 'login';
 
     return this.http
       .post<AuthResponseData>(

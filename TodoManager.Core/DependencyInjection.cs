@@ -1,17 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TodoManager.Common.Contracts;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Core.Helpers;
-using TodoManager.Core.Services;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Services;
 
-namespace TodoManager.Core;
+namespace TodoManager.Application;
 
-public static class DependencyInjectionExtensions
+public static class DependencyInjection
 {
     public static IServiceCollection AddCoreModules(this IServiceCollection services)
     {
         return services
-            .AddTransient<IJwtGenerator, JwtGenerator>()
             .AddScoped<IUserService, UserService>()
             .AddScoped<ITodoService, TodoService>()
             .AddScoped<IGroupService, GroupService>();

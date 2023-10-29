@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoManager.Api.Helpers;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Common.Models.Enums;
-using TodoManager.Common.Models.Todos;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Models.Enums;
+using TodoManager.Application.Models.Todos;
 
 namespace TodoManager.Api.Controllers;
 

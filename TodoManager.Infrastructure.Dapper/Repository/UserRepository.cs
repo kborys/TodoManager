@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using TodoManager.Common.Contracts.Repositories;
-using TodoManager.Common.Models.Users;
+using TodoManager.Application.Interfaces.Repositories;
+using TodoManager.Application.Models.Authentication;
+using TodoManager.Application.Models.Users;
 
 namespace TodoManager.Infrastructure.Dapper.Repository;
 
-public class UserRepository : IUserRepository
+internal class UserRepository : IUserRepository
 {
     private readonly string _connString;
 
@@ -19,12 +20,12 @@ public class UserRepository : IUserRepository
 
     private IDbConnection Connection => new SqlConnection(_connString);
 
-    public async Task<int> Create(UserCreateRequest request)
+    public async Task<int> Create(RegisterRequest request)
     {
         const string sql = "DECLARE @InsertedRows AS TABLE (Id int);" +
-            "INSERT INTO [User] (UserName, FirstName, LastName, Password, EmailAddress) " +
+            "INSERT INTO [User] (UserName, FirstName, LastName, PasswordHash, EmailAddress) " +
             "OUTPUT INSERTED.UserId INTO @InsertedRows " +
-            "VALUES (@UserName, @FirstName, @LastName, @Password, @EmailAddress); " +
+            "VALUES (@UserName, @FirstName, @LastName, @PasswordHash, @EmailAddress); " +
             "SELECT Id FROM @InsertedRows";
 
         using var connection = Connection;
@@ -53,7 +54,7 @@ public class UserRepository : IUserRepository
     public async Task Update(User user)
     {
         const string sql = "UPDATE [User] " +
-            "SET FirstName = @FirstName, LastName = @LastName, Password = @Password " +
+            "SET FirstName = @FirstName, LastName = @LastName, PasswordHash = @PasswordHash " +
             "WHERE UserId = @UserId;";
 
         using var connection = Connection;

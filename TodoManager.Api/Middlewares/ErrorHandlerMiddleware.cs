@@ -1,5 +1,5 @@
-﻿using TodoManager.Common.Models;
-using TodoManager.Common.Exceptions;
+﻿using TodoManager.Application.Exceptions;
+using TodoManager.Application.Models;
 
 namespace TodoManager.Api.Helpers;
 

@@ -1,7 +1,7 @@
-﻿using TodoManager.Common.Models.Enums;
-using TodoManager.Common.Models.Todos;
+﻿using TodoManager.Application.Models.Enums;
+using TodoManager.Application.Models.Todos;
 
-namespace TodoManager.Common.Contracts.Services;
+namespace TodoManager.Application.Interfaces.Services;
 
 public interface ITodoService
 {

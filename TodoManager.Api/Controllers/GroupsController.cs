@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoManager.Api.Helpers;
-using TodoManager.Common.Contracts.Services;
-using TodoManager.Common.Models.Groups;
-using TodoManager.Common.Models.Todos;
-using TodoManager.Common.Models.Users;
+using TodoManager.Application.Interfaces.Services;
+using TodoManager.Application.Models.Groups;
+using TodoManager.Application.Models.Todos;
+using TodoManager.Application.Models.Users;
 
 namespace TodoManager.Api.Controllers;
 
