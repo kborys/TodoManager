@@ -4,7 +4,7 @@ using TodoManager.Application.Models.Users;
 namespace TodoManager.Application.Interfaces.Repositories;
 public interface IUserRepository
 {
-    Task<int> Create(RegisterRequest request);
+    Task<int> Create(User user);
     Task<User?> GetById(int id);
     Task<User?> GetByUserName(string userName);
     Task Update(User user);

@@ -80,7 +80,4 @@
   <ItemGroup>
     <PostDeploy Include="Scripts\PostDeploymentScripts\Script.PostDeployment.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="TodoManager.SqlDb.refactorlog" />
-  </ItemGroup>
 </Project>

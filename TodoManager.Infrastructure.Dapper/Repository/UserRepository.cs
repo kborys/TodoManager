@@ -20,17 +20,16 @@ internal class UserRepository : IUserRepository
 
     private IDbConnection Connection => new SqlConnection(_connString);
 
-    public async Task<int> Create(RegisterRequest request)
+    public async Task<int> Create(User user)
     {
-        const string sql = "DECLARE @InsertedRows AS TABLE (Id int);" +
-            "INSERT INTO [User] (UserName, FirstName, LastName, PasswordHash, EmailAddress) " +
-            "OUTPUT INSERTED.UserId INTO @InsertedRows " +
-            "VALUES (@UserName, @FirstName, @LastName, @PasswordHash, @EmailAddress); " +
-            "SELECT Id FROM @InsertedRows";
+        const string sql = @"
+        INSERT INTO [User] (UserName, FirstName, LastName, PasswordHash, EmailAddress)
+        OUTPUT INSERTED.UserId
+        VALUES (@UserName, @FirstName, @LastName, @PasswordHash, @EmailAddress);";
 
         using var connection = Connection;
 
-        return await connection.ExecuteScalarAsync<int>(sql, request);
+        return await connection.ExecuteScalarAsync<int>(sql, user);
     }
 
     public async Task<User?> GetById(int id)

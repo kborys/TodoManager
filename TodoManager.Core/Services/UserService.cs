@@ -45,7 +45,7 @@ internal class UserService : IUserService
         var password = _passwordHasher.Hash(request.Password);
 
         var newUser = new User(userName, request.FirstName, request.LastName, password, request.EmailAddress);
-        newUser.UserId = await _userRepository.Create(request);
+        newUser.UserId = await _userRepository.Create(newUser);
 
         return newUser;
     }
